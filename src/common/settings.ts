@@ -16,8 +16,8 @@ import { getConfiguration, getWorkspaceFolders } from './vscodeapi';
 import { traceLog } from './logging';
 import * as consts from './constants';
 
-export interface ClearmlExtensionSettings {
-  clearmlConfigFilePath: string;
+export interface BentoMlExtensionSettings {
+  bentomlHomeDir: string;
   interpreter: string[];
 }
 
@@ -31,10 +31,10 @@ export interface ClearmlExtensionSettings {
  * @param {string} namespace - The namespace of the extension.
  * @param {WorkspaceFolder} [workspace] - An optional workspace to fetch settings for. If not provided,
  *                                        the function uses the first available workspace.
- * @returns {Promise<ClearmlExtensionSettings>} - A promise that resolves to the deeply merged settings object.
+ * @returns {Promise<BentoMlExtensionSettings>} - A promise that resolves to the deeply merged settings object.
  */
-export async function getExtensionSettings(workspace?: WorkspaceFolder): Promise<ClearmlExtensionSettings> {
-  const globalSettings: ClearmlExtensionSettings = await getGlobalSettings(consts.SETTINGS_NAMESPACE);
+export async function getExtensionSettings(workspace?: WorkspaceFolder): Promise<BentoMlExtensionSettings> {
+  const globalSettings: BentoMlExtensionSettings = await getGlobalSettings(consts.SETTINGS_NAMESPACE);
 
   // Use the first available workspace if none is provided
   if (!workspace) {
@@ -44,7 +44,7 @@ export async function getExtensionSettings(workspace?: WorkspaceFolder): Promise
 
   if (workspace) {
     const includeInterpreter = true;
-    const workspaceSettings: ClearmlExtensionSettings = await getWorkspaceSettings(
+    const workspaceSettings: BentoMlExtensionSettings = await getWorkspaceSettings(
       consts.SETTINGS_NAMESPACE,
       workspace,
       includeInterpreter
@@ -76,7 +76,7 @@ export async function getWorkspaceSettings(
   namespace: string,
   workspace: WorkspaceFolder,
   includeInterpreter?: boolean
-): Promise<ClearmlExtensionSettings> {
+): Promise<BentoMlExtensionSettings> {
   const config: WorkspaceConfiguration = getConfiguration(namespace, workspace.uri);
 
   let interpreter: string[] = [];
@@ -101,12 +101,12 @@ export async function getWorkspaceSettings(
     }
   }
 
-  const clearmlConfigFilePath: string = resolveSetting(
-    config.get<string>('clearmlConfigFilePath', getDefaultClearmlConfigFilePath()),
+  const bentomlHomeDir: string = resolveSetting(
+    config.get<string>('bentomlHomeDir', getDefaultBentoMlHomeDir()),
     workspace
   );
-  const workspaceSettings: ClearmlExtensionSettings = {
-    clearmlConfigFilePath: clearmlConfigFilePath,
+  const workspaceSettings: BentoMlExtensionSettings = {
+    bentomlHomeDir: bentomlHomeDir,
     interpreter: resolveSettings(interpreter, workspace),
   };
   return workspaceSettings;
@@ -126,7 +126,7 @@ function getGlobalValue<T>(config: WorkspaceConfiguration, key: string): T | und
  * @param namespace
  * @returns
  */
-export async function getGlobalSettings(namespace: string): Promise<ClearmlExtensionSettings> {
+export async function getGlobalSettings(namespace: string): Promise<BentoMlExtensionSettings> {
   const config = getConfiguration(namespace);
 
   let interpreter = getGlobalValue<string[]>(config, 'interpreter') ?? [];
@@ -134,9 +134,9 @@ export async function getGlobalSettings(namespace: string): Promise<ClearmlExten
     interpreter = (await getInterpreterDetails()).path ?? [];
   }
 
-  const settings: ClearmlExtensionSettings = {
-    clearmlConfigFilePath:
-      getGlobalValue<string>(config, 'clearmlConfigFilePath') ?? getDefaultClearmlConfigFilePath(),
+  const settings: BentoMlExtensionSettings = {
+    bentomlHomeDir:
+      getGlobalValue<string>(config, 'bentomlHomeDir') ?? getDefaultBentoMlHomeDir(),
     interpreter: interpreter ?? [],
   };
   return settings;
@@ -146,7 +146,7 @@ export function checkIfConfigurationChanged(
   e: ConfigurationChangeEvent,
   namespace: string = consts.SETTINGS_NAMESPACE
 ): boolean {
-  const thisExtensionSettings = [`${namespace}.clearmlConfigFilePath`];
+  const thisExtensionSettings = [`${namespace}.bentomlHomeDir`];
   const changed = thisExtensionSettings.map((s) => e.affectsConfiguration(s));
   return changed.includes(true);
 }
@@ -174,12 +174,12 @@ function resolveSettings(value: string[], workspace?: WorkspaceFolder): string[]
  * ```json
  * // raw settings.json
  * {
- *   "clearml-session-manager.clearmlConfigFilePath": "${userHome}/clearml.conf",
+ *   "bentoml.bentomlHomeDir": "${userHome}/bentoml",
  * }
  *
  * // would be resolved to something like
  * {
- *   "clearml-session-manager.clearmlConfigFilePath": "/home/eric/clearml.conf",
+ *   "bentoml.bentomlHomeDir": "/home/eric/bentoml",
  * }
  * ```
  *
@@ -213,10 +213,10 @@ function resolveSetting(value: string, workspace?: WorkspaceFolder): string {
   return value;
 }
 
-const getDefaultClearmlConfigFilePath = (): string => {
+const getDefaultBentoMlHomeDir = (): string => {
   const userHome = process.env.HOME || process.env.USERPROFILE;
-  const defaultClearmlConfigFilePath = `${userHome}/clearml.conf`;
-  return defaultClearmlConfigFilePath;
+  const defaultBentomlHomeDir = `${userHome}/bentoml`;
+  return defaultBentomlHomeDir;
 };
 
 /**

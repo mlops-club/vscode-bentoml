@@ -17,9 +17,13 @@ A VS Code extension inspired by the Docker extension that provides
 
 ## Contributing
 
-### Roadmap
+### CI tooling
 
-> Items marked with ✨ are high-impact, and important for our first release
+- `.c8rc.json` is for a code coverage tool called `c8`.
+- `.eslintrc.json` configuration file for a TypeScript linting tool called ESLint.
+- `src/test` tests
+- `.vscodeignore` excludes files from ending up in the built extension published to the marketplace.
+- `.prettierrc` is for a TypeScript formatting tool called `prettier`.
 
 ### Running the extension locally
 
@@ -28,7 +32,13 @@ VS Code makes it really easy to run extensions and try out code changes:
 1. be sure you have NodeJS installed, some had issues because they had the wrong Node version
 2. go to the `src/extension.ts` file and press `F5` to start a debugging session
 
-### Getting up to speed on ClearML and writing VS Code Extensions
+### Getting up to speed 
+
+#### What is BentoML?
+
+The [BentoML docs](https://docs.bentoml.com) are the best place to start.
+
+#### Writing VS Code Extensions
 
 > ⚠️ **Warning** these videos are about a different VS Code Extension for a tool called ClearML--the project this repo is a fork of. By watching these videos, you can learn a lot about how VS Code extensions are structured.
 

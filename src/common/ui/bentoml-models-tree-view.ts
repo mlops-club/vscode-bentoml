@@ -1,43 +1,43 @@
-import * as vscode from 'vscode';
-import { Task } from '../clearml/models/tasks';
-import { fetchClearmlSessions } from '../clearml/list-clearml-sessions';
+// TODO -- This entire file needs to be rewritten to use BentoML models
 
-export class ClearMlSessionsTreeDataProvider implements vscode.TreeDataProvider<ClearmlSession | vscode.TreeItem> {
+import * as vscode from 'vscode';
+
+export class BentoMlModelsTreeDataProvider implements vscode.TreeDataProvider<BentoMlModel | vscode.TreeItem> {
   constructor(public interactiveSessions: Task[] = []) {}
 
-  private _onDidChangeTreeData: vscode.EventEmitter<ClearmlSession | undefined | null | void> =
-    new vscode.EventEmitter<ClearmlSession | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<ClearmlSession | undefined | null | void> =
+  private _onDidChangeTreeData: vscode.EventEmitter<BentoMlModel | undefined | null | void> =
+    new vscode.EventEmitter<BentoMlModel | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<BentoMlModel | undefined | null | void> =
     this._onDidChangeTreeData.event;
 
   async refresh(): Promise<void> {
-    this.interactiveSessions = await fetchClearmlSessions();
+    // this.interactiveSessions = await fetchClearmlSessions();
     this._onDidChangeTreeData.fire();
   }
 
-  getTreeItem(element: ClearmlSession): vscode.TreeItem {
+  getTreeItem(element: BentoMlModel): vscode.TreeItem {
     return element;
   }
 
-  getChildren(element?: ClearmlSession): Thenable<ClearmlSession[] | vscode.TreeItem[]> {
+  getChildren(element?: BentoMlModel): Thenable<BentoMlModel[] | vscode.TreeItem[]> {
     // when the tree view is first opened, element is undefined. This means
     // this function needs to return the top-level items.
     if (!element) {
       return Promise.resolve(
         this.interactiveSessions.map(
-          (sessionTask: Task) => new ClearmlSession(`Session`, vscode.TreeItemCollapsibleState.Collapsed, sessionTask)
+          (sessionTask: Task) => new BentoMlModel(`Model`, vscode.TreeItemCollapsibleState.Collapsed, sessionTask)
         )
       );
     }
 
-    // otherwise, the element is a ClearmlSession, so expanding it should reveal
+    // otherwise, the element is a BentoMlModel, so expanding it should reveal
     // a list of its details. We show the details as tree items nested underneath.
-    const clearmlSessionDetails: vscode.TreeItem[] = (element as ClearmlSession).getClearmlSessionDetailsAsTreeItems();
-    return Promise.resolve(clearmlSessionDetails);
+    const bentoMlModelDetails: vscode.TreeItem[] = (element as BentoMlModel).getBentoMlModelDetailsAsTreeItems();
+    return Promise.resolve(bentoMlModelDetails);
   }
 }
 
-export class ClearmlSession extends vscode.TreeItem {
+export class BentoMlModel extends vscode.TreeItem {
   iconPath = new vscode.ThemeIcon('cloud');
 
   // setting this value allows us to condition the context menu on the type of tree item like so:
@@ -61,7 +61,7 @@ export class ClearmlSession extends vscode.TreeItem {
     `;
   }
 
-  getClearmlSessionDetailsAsTreeItems = (): vscode.TreeItem[] => {
+  getBentoMlModelDetailsAsTreeItems = (): vscode.TreeItem[] => {
     const makeTreeItem = (label: string, description: string): vscode.TreeItem => {
       const treeItem = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
       treeItem.description = description;

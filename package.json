@@ -22,7 +22,7 @@
   "description": "Manage bentos and models from VS Code. Get Autocompletion for bento config files.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mlops-club/vscode-clearml-session-manager.git"
+    "url": "https://github.com/mlops-club/vscode-bentoml.git"
   },
   "engines": {
     "vscode": "^1.83.0"
@@ -34,7 +34,7 @@
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
-      "title": "ClearML Session Manager Configuration",
+      "title": "BentoML Extension Configuration",
       "properties": {
         "bentoml.bentoHomeDir": {
           "type": "string",
@@ -46,67 +46,67 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "clearml-explorer-view-container",
+          "id": "models-explorer-view-container",
           "title": "BentoML",
           "icon": "src/resources/bentoml-logo.svg"
         }
       ]
     },
     "views": {
-      "clearml-explorer-view-container": [
+      "models-explorer-view-container": [
         {
-          "id": "clearml-session-tree-view",
-          "name": "ClearML Sessions"
+          "id": "bentoml-models-tree-view",
+          "name": "Models"
         }
       ]
     },
     "commands": [
       {
-        "command": "clearml-session-manager.installPythonDependencies",
-        "title": "ClearML: Install Python Dependencies"
+        "command": "bentoml.installPythonDependencies",
+        "title": "BentoML: Install Python Dependencies"
       },
       {
-        "command": "clearml-session-manager.refreshEntry",
-        "title": "ClearML: Refresh sessions",
+        "command": "bentoml.refreshEntry",
+        "title": "BentoML: Refresh models",
         "icon": "$(refresh)"
       },
       {
-        "command": "clearml-session-manager.openInBrowser",
+        "command": "bentoml.openInBrowser",
         "title": "View in browser",
         "icon": "$(link-external)"
       },
       {
-        "command": "clearml-session-manager.attachToSession",
+        "command": "bentoml.attachToSession",
         "title": "Attach to session",
         "icon": "$(debug-start)"
       },
       {
-        "command": "clearml-session-manager.copyValueToClipboard",
+        "command": "bentoml.copyValueToClipboard",
         "title": "Copy to clipboard"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "clearml-session-manager.refreshEntry",
-          "when": "view == clearml-session-tree-view",
+          "command": "bentoml.refreshEntry",
+          "when": "view == bentoml-models-tree-view",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "clearml-session-manager.openInBrowser",
-          "when": "view == clearml-session-tree-view && viewItem == top-level-clearml-session-tree-item",
+          "command": "bentoml.openInBrowser",
+          "when": "view == bentoml-models-tree-view && viewItem == top-level-clearml-session-tree-item",
           "group": "inline"
         },
         {
-          "command": "clearml-session-manager.attachToSession",
-          "when": "view == clearml-session-tree-view && viewItem == top-level-clearml-session-tree-item",
+          "command": "bentoml.attachToSession",
+          "when": "view == bentoml-models-tree-view && viewItem == top-level-clearml-session-tree-item",
           "group": "inline"
         },
         {
-          "command": "clearml-session-manager.copyValueToClipboard",
-          "when": "view == clearml-session-tree-view && viewItem == clearml-session-detail-tree-item",
+          "command": "bentoml.copyValueToClipboard",
+          "when": "view == bentoml-models-tree-view && viewItem == clearml-session-detail-tree-item",
           "group": "inline"
         }
       ]
@@ -124,15 +124,11 @@
     "lint": "eslint src --ext ts --fix",
     "format": "prettier --write ./",
     "test": "mv .vscode-test/user-data/1. .vscode-test/user-data/1.84-main.sock; c8 node ./out/test/runTest.js",
-    "create-clearml-credentials": "bash run.sh generate-clearml-credentials-for-compose",
     "clean": "bash run.sh clean",
-    "start-clearml-server": "bash run.sh start-clearml-server",
-    "start-clearml-session": "bash run.sh start-clearml-session --yes --queue sessions --docker python:3.9 --password test --username test",
-    "install-python-deps": "pip install clearml-session clearml pyhocon",
+    "install-python-deps": "pip install bentoml",
     "serve-coverage-report": "python -m http.server --directory coverage/lcov-report/ 80"
   },
   "extensionDependencies": [
-    "ms-vscode-remote.remote-ssh",
     "ms-python.python"
   ],
   "devDependencies": {

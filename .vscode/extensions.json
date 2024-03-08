@@ -6,6 +6,8 @@
     "amodio.tsl-problem-matcher",
     "ms-python.python",
     "ms-vscode-remote.remote-ssh",
-    "GitHub.copilot"
+    "GitHub.copilot",
+    "redhat.vscode-yaml",
+    "ms-vsliveshare.vsliveshare",
   ]
 }

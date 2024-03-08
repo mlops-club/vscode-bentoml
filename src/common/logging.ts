@@ -32,7 +32,7 @@ export let channel: OutputChannelLogger | undefined;
  * output channel that all logs in this extension will appear in.
  *
  * You can find logs in the Output tab of the Debug Console.
- * Click on the dropdown menu and select "ClearML Session Manager" (for example).
+ * Click on the dropdown menu and select "BentoML" (for example).
  */
 export function registerLogger(logChannel: LogOutputChannel): Disposable {
   channel = new OutputChannelLogger(logChannel);

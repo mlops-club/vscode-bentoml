@@ -24,15 +24,6 @@ function get-localhost {
 
 }
 
-# (example) ./run.sh test tests/test_slow.py::test__slow_add
-function test {
-    # run only specified tests, if none specified, run all
-    python -m pytest \
-        -m 'not slow' \
-        --ignore-glob 'tests/artifacts/*' \
-        --numprocesses auto \
-        "$THIS_DIR/tests/"
-}
 
 function clean {
     rm -rf \
@@ -42,12 +33,6 @@ function clean {
       coverage.xml \
       test-reports \
       tests/artifacts \
-      dev-utils/volumes/opt/clearml/agent \
-      dev-utils/volumes/opt/clearml/config/generated_credentials.env \
-      dev-utils/volumes/opt/clearml/config/clearml.conf \
-      dev-utils/volumes/opt/clearml/data \
-      dev-utils/volumes/opt/clearml/logs \
-      dev-utils/volumes/usr/ \
       .vscode-test \
       coverage \
       .nyc_output \

@@ -1,18 +1,11 @@
 import * as vscode from 'vscode';
 import * as consts from './common/constants';
-import { ClearmlExtensionSettings, getExtensionSettings, getInterpreterFromSetting } from './common/settings';
+import { BentoMlExtensionSettings as BentoMlExtensionSettings, getExtensionSettings, getInterpreterFromSetting } from './common/settings';
 import { registerLogger, traceInfo, traceLog } from './common/logging';
 import { createOutputChannel } from './common/vscodeapi';
 import { initializePython } from './common/python';
-import { ensureClearMlSessionCliIsAvailable } from './common/clearml/install-cli';
-import { ClearMlSessionsTreeDataProvider, ClearmlSession } from './common/ui/clearml-tree-view';
-import { functionReadClearmlConfigFile } from './common/clearml/clearml-conf';
-import { getPathToClearmlConfigFile } from './common/clearml/list-clearml-sessions';
-import { startClearmlSessionSubprocess } from './common/clearml/attach-to-interactive-session';
-import { ClearMLApiClient } from './common/clearml/api-client';
-import { TaskLogResponse } from './common/clearml/models/task-logs';
-import { SshDetails, querySshDetailsForSession } from './common/clearml/ssh-connect-to-session';
-import { connectToRemoteSSH, copyPasswordToClipboard } from './common/remote-ssh-connect';
+import { ensureBentoMlCliIsAvailable } from './common/bentoml/install-cli';
+import { BentoMlModelsTreeDataProvider, BentoMlModel } from './common/ui/bentoml-models-tree-view';
 
 export async function activate(context: vscode.ExtensionContext) {
   /**
@@ -25,7 +18,7 @@ export async function activate(context: vscode.ExtensionContext) {
    *
    * 1. Open the panel with `Ctrl + ~`
    * 2. Click on the "Output" tab
-   * 3. Select "ClearML Session Manager" output channel from the dropdown
+   * 3. Select "BentoML" output channel from the dropdown
    */
   const outputChannel = createOutputChannel(consts.EXTENSION_NAME);
   context.subscriptions.push(outputChannel, registerLogger(outputChannel));
@@ -38,7 +31,7 @@ export async function activate(context: vscode.ExtensionContext) {
    * The user of the extension can define settings in their .vscode/settings.json or global settings.
    */
   await loadPythonExtension(context);
-  const clearmlExtensionSettings: ClearmlExtensionSettings = await getExtensionSettings();
+  const bentoMlExtensionSettings: BentoMlExtensionSettings = await getExtensionSettings();
   // print settings whenever they change
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(async (e: vscode.ConfigurationChangeEvent) => {
@@ -47,19 +40,19 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   /**
-   * Register the ClearML Session tree view.
+   * Register the BentoML Models tree view.
    *
    * VS Code Terminology:
    * - a "View Container" is a sidebar item in VS Code, e.g. "Explorer", "Search", "Source Control", etc.
-   *   This extension contributes a View Container with the ClearML logo.
+   *   This extension contributes a View Container with the BentoML logo.
    * - a "View" is a collapsible dropdown menu within a View Container. For the file explorer view, these
-   *   would be "Open Editors", "Outline", etc. This extension contributes a "Tree View" to the ClearML View Container.
+   *   would be "Open Editors", "Outline", etc. This extension contributes a "Tree View" to the BentoML View Container.
    *
-   * This tree view allows the user to browse ClearML Sessions. The UI elements, e.g. the icons are
+   * This tree view allows the user to browse BentoML models. The UI elements, e.g. the icons are
    * defined in the package.json file.
    */
-  const clearmlSessionsTreeProvider = new ClearMlSessionsTreeDataProvider();
-  vscode.window.registerTreeDataProvider('clearml-session-tree-view', clearmlSessionsTreeProvider);
+  const bentoMlModelsTreeProvider = new BentoMlModelsTreeDataProvider();
+  vscode.window.registerTreeDataProvider('bentoml-models-tree-view', bentoMlModelsTreeProvider);
 
   /**
    * Register the commands that are used by this extension.
@@ -71,31 +64,11 @@ export async function activate(context: vscode.ExtensionContext) {
    */
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.refreshEntry`, async () => {
     await loadPythonExtension(context);
-    clearmlSessionsTreeProvider.refresh();
+    bentoMlModelsTreeProvider.refresh();
   });
 
-  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openInBrowser`, async (session: ClearmlSession) => {
-    const clearmlConfFpath: string = await getPathToClearmlConfigFile();
-    const clearmlConfig = await functionReadClearmlConfigFile(clearmlConfFpath);
-    const clearmlTaskUrlinUi = `${clearmlConfig.api.web_server}/projects/${session.sessionTask.project.id}/experiments/${session.sessionTask.id}/execution?columns=selected&columns=type&columns=name&columns=tags&columns=status&columns=project.name&columns=users&columns=started&columns=last_update&columns=last_iteration&columns=parent.name&order=-last_update&filter=`;
-    vscode.env.openExternal(vscode.Uri.parse(clearmlTaskUrlinUi));
-  });
-
-  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.attachToSession`, async (session: ClearmlSession) => {
-    await initializePython(context.subscriptions);
-
-    const extensionSettings: ClearmlExtensionSettings = await getExtensionSettings();
-
-    const clearmlConfigFilePath = extensionSettings.clearmlConfigFilePath;
-    const clearmlClient = await ClearMLApiClient.fromConfigFile(clearmlConfigFilePath);
-    const sessionSshDetails = (await querySshDetailsForSession(clearmlClient, session.sessionTask.id)) as SshDetails;
-
-    copyPasswordToClipboard(sessionSshDetails.password);
-    connectToRemoteSSH(
-      sessionSshDetails.username,
-      session.sessionTask.hyperparams.properties.external_address.value,
-      parseInt(sessionSshDetails.port)
-    );
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openInBrowser`, async (session: BentoMlModel) => {
+    vscode.env.openExternal(vscode.Uri.parse("https://docs.bentoml.com"));
   });
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.copyValueToClipboard`, async (treeItem: vscode.TreeItem) => {
@@ -105,9 +78,10 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  let disposable = vscode.commands.registerCommand('clearml-session-manager.installPythonDependencies', async () => {
+
+  let disposable = vscode.commands.registerCommand(`${consts.EXTENSION_ID}.installPythonDependencies`, async () => {
     // The code you place here will be executed every time your command is executed
-    await ensureClearMlSessionCliIsAvailable();
+    await ensureBentoMlCliIsAvailable();
     vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] Python dependencies installed successfully!`);
   });
 
@@ -116,10 +90,10 @@ export async function activate(context: vscode.ExtensionContext) {
   // notify the user that the extension activated successfully
   vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] extension loaded!`);
 
-  // Perform initial load of clearml sessions to display in the sidebar, TODO this is hacky/brittle
-  setTimeout(async () => {
-    await clearmlSessionsTreeProvider.refresh();
-  }, 3000);
+  // Perform initial load of bentoml models and bentos to display in the sidebar, TODO this is hacky/brittle
+  // setTimeout(async () => {
+  //   await clearmlSessionsTreeProvider.refresh();
+  // }, 3000);
 }
 
 // This method is called when your extension is deactivated
