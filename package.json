@@ -1,9 +1,9 @@
 {
-  "name": "clearml-session-manager",
+  "name": "bentoml",
   "publisher": "mlops-club",
-  "version": "0.0.6",
-  "displayName": "ClearML Session Manager",
-  "icon": "src/resources/clearml-logo.png",
+  "version": "0.0.0",
+  "displayName": "BentoML",
+  "icon": "src/resources/bentoml-logo.svg",
   "author": {
     "email": "eric.russia97+mlops-club@gmail.com",
     "name": "MLOps Club"
@@ -14,24 +14,12 @@
       "url": "https://www.linkedin.com/in/eric-riddoch/"
     },
     {
-      "name": "Jordan Pierre",
-      "url": "https://www.linkedin.com/in/jordan-pierre/"
-    },
-    {
       "name": "Jay Cui",
       "url": "https://www.linkedin.com/in/shilongjaycui/"
-    },
-    {
-      "name": "Paul McSlarrow",
-      "url": "https://www.linkedin.com/in/paul-mcslarrow-58b8971b7/"
-    },
-    {
-      "name": "Saul Ifshin",
-      "url": "https://www.linkedin.com/in/saul-ifshin-a7187524b/"
     }
   ],
   "license": "Apache-2.0",
-  "description": "List, start, stop, and connect to ClearML Sessions from VS Code.",
+  "description": "Manage bentos and models from VS Code. Get Autocompletion for bento config files.",
   "repository": {
     "type": "git",
     "url": "https://github.com/mlops-club/vscode-clearml-session-manager.git"
@@ -48,10 +36,10 @@
     "configuration": {
       "title": "ClearML Session Manager Configuration",
       "properties": {
-        "clearml-session-manager.clearmlConfigFilePath": {
+        "bentoml.bentoHomeDir": {
           "type": "string",
-          "description": "Path to clearml.conf file. If unset, defaults to ~/clearml.conf",
-          "default": "~/clearml.conf"
+          "description": "Path to BentoML home directory. Defaults to `~/bentoml`",
+          "default": "~/bentoml"
         }
       }
     },
@@ -59,8 +47,8 @@
       "activitybar": [
         {
           "id": "clearml-explorer-view-container",
-          "title": "ClearML Sessions",
-          "icon": "src/resources/clearml-logo.svg"
+          "title": "BentoML",
+          "icon": "src/resources/bentoml-logo.svg"
         }
       ]
     },
@@ -163,7 +151,7 @@
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.5.0",
     "typescript": "^5.2.2",
-    "vsce": "^1.97.0",
+    "vsce": "^2.15.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },

@@ -12,7 +12,7 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
         // automatically open the dev VS Code in the clearml-playground-workspace folder
-        "${workspaceFolder}/dev-utils/clearml-playground-workspace"
+        "${workspaceFolder}/bentoml-playground-workspace"
       ],
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "preLaunchTask": "${defaultBuildTask}"

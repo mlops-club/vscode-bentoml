@@ -3,7 +3,7 @@
 
 import * as path from 'path';
 
-export const EXTENSION_ID = 'clearml-session-manager';
+export const EXTENSION_ID = 'bentoml';
 export const SETTINGS_NAMESPACE = EXTENSION_ID;
 export const EXTENSION_NAME = 'BentoML';
 const folderName = path.basename(__dirname);
