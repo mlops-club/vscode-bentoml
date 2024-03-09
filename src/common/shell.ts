@@ -13,8 +13,8 @@ import { traceError, traceInfo } from './logging';
 export async function runShellCommand(
   cmd: string,
   args: string[],
-  logFn: (msg: string) => void,
-  errorLogFn: (msg: string) => void
+  logFn: (msg: string) => void = traceInfo,
+  errorLogFn: (msg: string) => void = traceError,
 ): Promise<{ logs: string; exitCode: number }> {
   const process = spawn(cmd, args);
   let logs = '';

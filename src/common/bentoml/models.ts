@@ -120,12 +120,19 @@ export interface IDObject {
     options: any[];
     metadata: string;
     context: string;
-  }
+    creation_time: string;  }
   
-  export interface Model {
+export interface Model {
     name: string;
     model_fs: string;
     model_info: ModelInfo;
     custom_objects: string;
     _internal: boolean;
   }
+
+export interface SimpleModel {
+  tag: string;
+  module: string;
+  size: string;
+  creation_time: string;
+}

@@ -5,9 +5,8 @@ import { registerLogger, traceInfo, traceLog } from './common/logging';
 import { createOutputChannel } from './common/vscodeapi';
 import { initializePython } from './common/python';
 import { ensureBentoMlCliIsAvailable } from './common/bentoml/install-cli';
-
-import { Model } from './common/bentoml/models';
-
+import { Model, SimpleModel } from './common/bentoml/models';
+import {getModels, deleteBentoModel} from './common/bentoml/cli-client';
 import { BentoMlModelsTreeDataProvider, BentoMlModel } from './common/ui/bentoml-models-tree-view';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -34,6 +33,8 @@ export async function activate(context: vscode.ExtensionContext) {
    * The user of the extension can define settings in their .vscode/settings.json or global settings.
    */
   await loadPythonExtension(context);
+  await ensureBentoMlCliIsAvailable();
+  await getModels();
   const bentoMlExtensionSettings: BentoMlExtensionSettings = await getExtensionSettings();
   // print settings whenever they change
   context.subscriptions.push(
@@ -41,6 +42,8 @@ export async function activate(context: vscode.ExtensionContext) {
       traceInfo('Extension settings changed. New settings:', getExtensionSettings());
     })
   );
+
+
 
   /**
    * Register the BentoML Models tree view.
@@ -80,6 +83,13 @@ export async function activate(context: vscode.ExtensionContext) {
       vscode.window.showInformationMessage(`${treeItem.label} was copied to your clipboard`);
     }
   });
+
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.deleteModel`, async (mlmodel: SimpleModel) => {
+    await getModels();
+    deleteBentoModel(mlmodel);
+    //refresh();
+  });
+
 
 
   let disposable = vscode.commands.registerCommand(`${consts.EXTENSION_ID}.installPythonDependencies`, async () => {
