@@ -7,14 +7,14 @@ import { getPathToActivePythonInterpreter, promptIfPythonInterpreterIsNotConfigu
 export async function getModels() {
     const interpreterFpath = (await getPathToActivePythonInterpreter()) as string;
     const response = await runShellCommand(interpreterFpath, ["-m","bentoml", "models", "list", "--output", "json"]);
-    console.log(response.logs);
+    console.log(`getModels() response: ${response.logs}`);
     return JSON.parse(response.logs) as SimpleModel[];
 }
 
 export async function getBentos() {
     const interpreterFpath = (await getPathToActivePythonInterpreter()) as string;
     const response = await runShellCommand(interpreterFpath, ["-m","bentoml", "list", "--output", "json"]);
-    console.log(response.logs);
+    console.log(`getBentos() response: ${response.logs}`);
     return JSON.parse(response.logs) as Bento[];
 }
 

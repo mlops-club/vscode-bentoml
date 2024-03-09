@@ -62,7 +62,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider('bentoml-models', bentoMlModelsTreeProvider);
 
   const bentoMlBentosTreeProvider = new BentoMlBentosTreeDataProvider();
-  vscode.window.registerTreeDataProvider('bentoml-models', bentoMlBentosTreeProvider);
+  vscode.window.registerTreeDataProvider('bentoml-bentos', bentoMlBentosTreeProvider);
 
   /**
    * Register the commands that are used by this extension.
