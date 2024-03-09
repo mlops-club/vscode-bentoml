@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
-import { Model, SimpleModel} from './models';
+import { Model, SimpleModel, Bento } from './models';
 import { runShellCommand } from '../shell';
 import { getPathToActivePythonInterpreter, promptIfPythonInterpreterIsNotConfigured } from '../python';
-import { BentoMlModel } from '../ui/bentoml-models-tree-view';
 
 
 export async function getModels() {
@@ -12,9 +11,23 @@ export async function getModels() {
     return JSON.parse(response.logs) as SimpleModel[];
 }
 
-export async function deleteBentoModel(object: SimpleModel){
+export async function getBentos() {
+    const interpreterFpath = (await getPathToActivePythonInterpreter()) as string;
+    const response = await runShellCommand(interpreterFpath, ["-m","bentoml", "list", "--output", "json"]);
+    console.log(response.logs);
+    return JSON.parse(response.logs) as Bento[];
+}
+
+export async function deleteModel(object: SimpleModel){
     const interpreterFpath = (await getPathToActivePythonInterpreter()) as string;
     const response = await runShellCommand(interpreterFpath, ["-m","bentoml", "models","delete", object.tag, "-y"]);
+    console.log(response.logs);
+    return response.logs;
+}
+
+export async function deleteBento(object: Bento){
+    const interpreterFpath = (await getPathToActivePythonInterpreter()) as string;
+    const response = await runShellCommand(interpreterFpath, ["-m","bentoml", "delete", object.tag, "-y"]);
     console.log(response.logs);
     return response.logs;
 }

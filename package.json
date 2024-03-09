@@ -66,6 +66,12 @@
           "id": "bentoml-models-tree-view",
           "name": "Models"
         }
+      ],
+      "bentos-explorer-view-container": [
+        {
+          "id": "bentoml-bentos-tree-view",
+          "name": "Bentos"
+        }
       ]
     },
     "commands": [
@@ -84,8 +90,13 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "bentoml.openInBrowser",
-        "title": "View in browser",
+        "command": "bentoml.openModelInBrowser",
+        "title": "View model in browser",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "bentoml.openBentoInBrowser",
+        "title": "View Bento in browser",
         "icon": "$(link-external)"
       },
       {
@@ -94,8 +105,13 @@
         "icon": "$(remove)"
       },
       {
+        "command": "bentoml.deleteBento",
+        "title": "Delete BentoML Bento",
+        "icon": "$(remove)"
+      },
+      {
         "command": "bentoml.copyValueToClipboard",
-        "title": "Copy to clipboard"
+        "title": "Copy value to clipboard"
       }
     ],
     "menus": {
@@ -104,17 +120,32 @@
           "command": "bentoml.refreshModelEntry",
           "when": "view == bentoml-models-tree-view",
           "group": "navigation"
+        },
+        {
+          "command": "bentoml.refreshBentoEntry",
+          "when": "view == bentoml-bentos-tree-view",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "bentoml.openInBrowser",
+          "command": "bentoml.openModelInBrowser",
           "when": "view == bentoml-models-tree-view && viewItem == top-level-bentoml-model-tree-item",
+          "group": "inline"
+        },
+        {
+          "command": "bentoml.openBentoInBrowser",
+          "when": "view == bentoml-bentos-tree-view && viewItem == top-level-bentoml-bento-tree-item",
           "group": "inline"
         },
         {
           "command": "bentoml.deleteModel",
           "when": "view == bentoml-models-tree-view && viewItem == top-level-bentoml-model-tree-item",
+          "group": "inline"
+        },
+        {
+          "command": "bentoml.deleteBento",
+          "when": "view == bentoml-bentos-tree-view && viewItem == top-level-bentoml-bento-tree-item",
           "group": "inline"
         },
         {

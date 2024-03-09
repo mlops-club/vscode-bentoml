@@ -30,7 +30,7 @@ export class BentoMlModelsTreeDataProvider implements vscode.TreeDataProvider<Be
       //const dummy_model = new BentoMlModel(`Model`, vscode.TreeItemCollapsibleState.Collapsed);
       return Promise.resolve(
         this.models.map(
-          (model: SimpleModel) => new BentoMlModel(`Model`, vscode.TreeItemCollapsibleState.Collapsed, model)));
+          (model: SimpleModel) => new BentoMlModel(model.tag, vscode.TreeItemCollapsibleState.Collapsed, model)));
       // return Promise.resolve(
       //   this.models.map(
       //     (model: Model) => new BentoMlModel(`Model`, vscode.TreeItemCollapsibleState.Collapsed, model)

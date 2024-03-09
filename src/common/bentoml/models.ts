@@ -136,3 +136,10 @@ export interface SimpleModel {
   size: string;
   creation_time: string;
 }
+
+export interface Bento {
+  tag: string;
+  size: string;
+  model_size: string;
+  creation_time: string;
+}
