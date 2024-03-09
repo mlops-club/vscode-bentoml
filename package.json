@@ -16,6 +16,14 @@
     {
       "name": "Jay Cui",
       "url": "https://www.linkedin.com/in/shilongjaycui/"
+    },
+    {
+      "name": "Mert Bozkir",
+      "url": "https://www.linkedin.com/in/mertbozkir/"
+    },
+    {
+      "name": "Noor Assi",
+      "url": "https://www.linkedin.com/in/noor-assi/"
     }
   ],
   "license": "Apache-2.0",
@@ -53,6 +61,12 @@
       ]
     },
     "views": {
+      "bentos-explorer-view-container": [
+        {
+          "id": "bentoml-bentos-tree-view",
+          "name": "Bentos"
+        }
+      ],
       "models-explorer-view-container": [
         {
           "id": "bentoml-models-tree-view",

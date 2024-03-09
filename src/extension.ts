@@ -5,6 +5,8 @@ import { registerLogger, traceInfo, traceLog } from './common/logging';
 import { createOutputChannel } from './common/vscodeapi';
 import { initializePython } from './common/python';
 import { ensureBentoMlCliIsAvailable } from './common/bentoml/install-cli';
+import { Model } from './common/bentoml/models';
+
 import { BentoMlModelsTreeDataProvider, BentoMlModel } from './common/ui/bentoml-models-tree-view';
 
 export async function activate(context: vscode.ExtensionContext) {

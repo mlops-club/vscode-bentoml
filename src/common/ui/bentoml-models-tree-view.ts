@@ -1,9 +1,11 @@
 // TODO -- This entire file needs to be rewritten to use BentoML models
 
 import * as vscode from 'vscode';
+import { Model } from '../bentoml/models';
+
 
 export class BentoMlModelsTreeDataProvider implements vscode.TreeDataProvider<BentoMlModel | vscode.TreeItem> {
-  constructor(public interactiveSessions: Task[] = []) {}
+  constructor(public models: Model[] = []) {}
 
   private _onDidChangeTreeData: vscode.EventEmitter<BentoMlModel | undefined | null | void> =
     new vscode.EventEmitter<BentoMlModel | undefined | null | void>();
@@ -24,8 +26,8 @@ export class BentoMlModelsTreeDataProvider implements vscode.TreeDataProvider<Be
     // this function needs to return the top-level items.
     if (!element) {
       return Promise.resolve(
-        this.interactiveSessions.map(
-          (sessionTask: Task) => new BentoMlModel(`Model`, vscode.TreeItemCollapsibleState.Collapsed, sessionTask)
+        this.models.map(
+          (model: Model) => new BentoMlModel(`Model`, vscode.TreeItemCollapsibleState.Collapsed, model)
         )
       );
     }
@@ -43,21 +45,21 @@ export class BentoMlModel extends vscode.TreeItem {
   // setting this value allows us to condition the context menu on the type of tree item like so:
   // "when": "viewItem == top-level-clearml-session-tree-item"; this allows us, in the package.json,
   // to distinguish between the top-level tree item and the details tree items (children of the top-level items)
-  contextValue = 'top-level-clearml-session-tree-item';
+  contextValue = 'top-level-bentoml-session-tree-item';
 
   constructor(
     public readonly label: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly sessionTask: Task
+    public readonly model: Model
   ) {
     super(label, collapsibleState);
 
-    this.description = sessionTask.id;
+    this.description = model.id;
 
     this.tooltip = `
-    Comment: ${sessionTask.comment}
-    Project ID: ${sessionTask.project.id}
-    Task ID: ${sessionTask.id}
+    Comment: ${model.comment}
+    Project ID: ${model.project.id}
+    Task ID: ${model.id}
     `;
   }
 
@@ -65,22 +67,22 @@ export class BentoMlModel extends vscode.TreeItem {
     const makeTreeItem = (label: string, description: string): vscode.TreeItem => {
       const treeItem = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
       treeItem.description = description;
-      treeItem.contextValue = 'clearml-session-detail-tree-item';
+      treeItem.contextValue = 'bentoml-session-detail-tree-item';
       return treeItem;
     };
 
     return [
-      makeTreeItem(`Project ID`, this.sessionTask.project.id),
-      makeTreeItem(`Task ID`, this.sessionTask.id),
-      makeTreeItem(`Comment`, this.sessionTask.comment),
-      makeTreeItem(`Active duration`, String(this.sessionTask.active_duration) + ' minutes'),
-      makeTreeItem(`Status`, this.sessionTask.status),
-      makeTreeItem(`Type`, this.sessionTask.type),
-      makeTreeItem(`Created`, this.sessionTask.created),
-      makeTreeItem(`Last update`, this.sessionTask.last_update),
-      makeTreeItem(`Last iteration`, String(this.sessionTask.last_iteration)),
-      makeTreeItem(`Last worker`, this.sessionTask.last_worker),
-      makeTreeItem(`Queue `, this.sessionTask.execution.queue.id),
+      makeTreeItem(`Project ID`, this.model.project.id),
+      makeTreeItem(`Task ID`, this.model.id),
+      makeTreeItem(`Comment`, this.model.comment),
+      makeTreeItem(`Active duration`, String(this.model.active_duration) + ' minutes'),
+      makeTreeItem(`Status`, this.model.status),
+      makeTreeItem(`Type`, this.model.type),
+      makeTreeItem(`Created`, this.model.created),
+      makeTreeItem(`Last update`, this.model.last_update),
+      makeTreeItem(`Last iteration`, String(this.model.last_iteration)),
+      makeTreeItem(`Last worker`, this.model.last_worker),
+      makeTreeItem(`Queue `, this.model.execution.queue.id),
     ];
   };
 }
