@@ -6,7 +6,7 @@ import { getPathToActivePythonInterpreter, promptIfPythonInterpreterIsNotConfigu
 
 export async function getModels() {
     const interpreterFpath = (await getPathToActivePythonInterpreter()) as string;
-    const response = await runShellCommand(interpreterFpath, ["-m","bentoml", "models","list", "--output", "json"]);
+    const response = await runShellCommand(interpreterFpath, ["-m","bentoml", "models", "list", "--output", "json"]);
     console.log(response.logs);
     return JSON.parse(response.logs) as SimpleModel[];
 }

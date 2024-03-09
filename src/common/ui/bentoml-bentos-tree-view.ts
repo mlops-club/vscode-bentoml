@@ -25,7 +25,7 @@ export class BentoMlBentosTreeDataProvider implements vscode.TreeDataProvider<Be
   getChildren(element?: BentoMlBento): Thenable<BentoMlBento[] | vscode.TreeItem[]> {
     // when the tree view is first opened, element is undefined. This means
     // this function needs to return the top-level items.
-    console.log(`element: ${element}`);
+    console.log(`bento element: ${element}`);
     if (!element) {
       return Promise.resolve(
         this.bentos.map(

@@ -25,7 +25,7 @@ export class BentoMlModelsTreeDataProvider implements vscode.TreeDataProvider<Be
   getChildren(element?: BentoMlModel): Thenable<BentoMlModel[] | vscode.TreeItem[]> {
     // when the tree view is first opened, element is undefined. This means
     // this function needs to return the top-level items.
-    console.log(`element: ${element}`);
+    console.log(`model element: ${element}`);
     if (!element) {
       //const dummy_model = new BentoMlModel(`Model`, vscode.TreeItemCollapsibleState.Collapsed);
       return Promise.resolve(
