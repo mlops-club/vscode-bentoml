@@ -9,5 +9,15 @@
     "dist": true // set this to false to include "dist" folder in search results
   },
   // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
-  "typescript.tsc.autoDetect": "off"
+  "typescript.tsc.autoDetect": "off",
+  "json.schemas": [
+    {
+      "fileMatch": ["**/*bentofile.json"],
+      "url": "./src/resources/yamlSchemas/bentofileSchema.json"
+    }
+  ],
+  "json.validate.enable": true,
+  "yaml.schemas": {
+    "./src/resources/yamlSchemas/bentofileSchema.json": "**/*bentofile.yaml"
+  }
 }

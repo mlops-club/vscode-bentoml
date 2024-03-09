@@ -20,6 +20,10 @@
     {
       "name": "Mert Bozkir",
       "url": "https://www.linkedin.com/in/mertbozkir/"
+    },
+    {
+      "name": "Noor Assi",
+      "url": "https://www.linkedin.com/in/noor-assi/"
     }
   ],
   "license": "Apache-2.0",
@@ -37,6 +41,12 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "yamlValidation": [
+      {
+        "fileMatch": "**/*bentofile.yaml",
+        "url": "./src/resources/yamlSchemas/bentofileSchema.json"
+      }
+    ],
     "configuration": {
       "title": "BentoML Extension Configuration",
       "properties": {
@@ -133,7 +143,8 @@
     "serve-coverage-report": "python -m http.server --directory coverage/lcov-report/ 80"
   },
   "extensionDependencies": [
-    "ms-python.python"
+    "ms-python.python",
+    "redhat.vscode-yaml"
   ],
   "devDependencies": {
     "@types/fs-extra": "^11.0.3",
