@@ -54,12 +54,12 @@ export class BentoMlModel extends vscode.TreeItem {
   ) {
     super(label, collapsibleState);
 
-    this.description = model.id;
+    this.description = model.name;
 
     this.tooltip = `
-    Comment: ${model.comment}
-    Project ID: ${model.project.id}
-    Task ID: ${model.id}
+    Tag: ${model.model_info.tag}
+    Labels: ${model.model_info.labels}
+    Context: ${model.model}
     `;
   }
 

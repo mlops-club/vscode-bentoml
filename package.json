@@ -80,8 +80,13 @@
         "title": "BentoML: Install Python Dependencies"
       },
       {
-        "command": "bentoml.refreshEntry",
+        "command": "bentoml.refreshModelEntry",
         "title": "BentoML: Refresh models",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "bentoml.refreshBentoEntry",
+        "title": "BentoML: Refresh Bentos",
         "icon": "$(refresh)"
       },
       {
