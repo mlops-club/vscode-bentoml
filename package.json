@@ -60,17 +60,21 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "models-explorer-view-container",
-          "title": "BentoML",
+          "id": "bentoml-explorer",
+          "title": "BentoML Explorer",
           "icon": "src/resources/bentoml-logo.svg"
         }
       ]
     },
     "views": {
-      "models-explorer-view-container": [
+      "bentoml-explorer": [
         {
-          "id": "bentoml-models-tree-view",
+          "id": "bentoml-models",
           "name": "Models"
+        },
+        {
+          "id": "bentoml-bentos",
+          "name": "Bentos"
         }
       ]
     },
@@ -80,47 +84,77 @@
         "title": "BentoML: Install Python Dependencies"
       },
       {
-        "command": "bentoml.refreshEntry",
+        "command": "bentoml.refreshModelEntry",
         "title": "BentoML: Refresh models",
         "icon": "$(refresh)"
       },
       {
-        "command": "bentoml.openInBrowser",
-        "title": "View in browser",
+        "command": "bentoml.refreshBentoEntry",
+        "title": "BentoML: Refresh Bentos",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "bentoml.openModelInBrowser",
+        "title": "View model in browser",
         "icon": "$(link-external)"
       },
       {
-        "command": "bentoml.attachToSession",
-        "title": "Attach to session",
-        "icon": "$(debug-start)"
+        "command": "bentoml.openBentoInBrowser",
+        "title": "View Bento in browser",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "bentoml.deleteModel",
+        "title": "Delete BentoML Model",
+        "icon": "$(remove)"
+      },
+      {
+        "command": "bentoml.deleteBento",
+        "title": "Delete BentoML Bento",
+        "icon": "$(remove)"
       },
       {
         "command": "bentoml.copyValueToClipboard",
-        "title": "Copy to clipboard"
+        "title": "Copy value to clipboard"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "bentoml.refreshEntry",
-          "when": "view == bentoml-models-tree-view",
+          "command": "bentoml.refreshModelEntry",
+          "when": "view == bentoml-models",
+          "group": "navigation"
+        },
+        {
+          "command": "bentoml.refreshBentoEntry",
+          "when": "view == bentoml-bentos",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "bentoml.openInBrowser",
-          "when": "view == bentoml-models-tree-view && viewItem == top-level-clearml-session-tree-item",
+          "command": "bentoml.openModelInBrowser",
+          "when": "view == bentoml-models && viewItem == top-level-bentoml-model-tree-item",
           "group": "inline"
         },
         {
-          "command": "bentoml.attachToSession",
-          "when": "view == bentoml-models-tree-view && viewItem == top-level-clearml-session-tree-item",
+          "command": "bentoml.openBentoInBrowser",
+          "when": "view == bentoml-bentos && viewItem == top-level-bentoml-bento-tree-item",
+          "group": "inline"
+        },
+        {
+          "command": "bentoml.deleteModel",
+          "when": "view == bentoml-models && viewItem == top-level-bentoml-model-tree-item",
+          "group": "inline"
+        },
+        {
+          "command": "bentoml.deleteBento",
+          "when": "view == bentoml-bentos && viewItem == top-level-bentoml-bento-tree-item",
           "group": "inline"
         },
         {
           "command": "bentoml.copyValueToClipboard",
-          "when": "view == bentoml-models-tree-view && viewItem == clearml-session-detail-tree-item",
+          "when": "view == bentoml-models && viewItem == top-level-bentoml-model-tree-item",
           "group": "inline"
         }
       ]

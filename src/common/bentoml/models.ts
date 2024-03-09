@@ -83,47 +83,63 @@ export interface IDObject {
   export interface HyperParams {
     [section: string]: Record<string, HyperParamValue>;
   }
-  
-  export interface Model {
-    id: string;
-    company: Company;
-    user: User;
-    name: string;
-    type: string;
-    status: string;
-    status_reason: string;
-    status_message: string;
-    status_changed: string;
-    comment: string;
-    report_assets: any[];
-    created: string;
-    started: string;
-    active_duration: number;
-    project: Project;
-    input: Input;
-    output: Record<string, any>;
-    execution: Execution;
-    tags: any[];
-    system_tags: string[];
-    script: Script;
-    last_worker: string;
-    last_worker_report: string;
-    last_update: string;
-    last_change: string;
-    last_iteration: number;
-    last_metrics: LastMetrics;
-    metric_stats: Record<string, MetricStats>;
-    hyperparams: HyperParams;
-    configuration: Record<string, any>;
-    runtime: Record<string, any>;
-    //models: {
-    //  input: any[];
-    //  output: any[];
-    //};
-    container: {
-      image: string;
-      arguments: string;
-      setup_shell_script: string;
-    };
-    last_changed_by: string;
+
+  export interface ModelSignatureDict {
+    batchable?: boolean; // Optional flag for batchability
+    batch_dim?: number | [number, number]; // Optional batch dimensions
+    input_spec?: any | any[]; // Optional input specification (flexible typing)
+    output_spec?: any; // Optional output specification (flexible typing)
   }
+
+//batchable: bool
+//batch_dim: t.Union[t.Tuple[int, int], int]
+//input_spec: t.Optional[t.Union[t.Tuple[AnyType], AnyType]]
+//output_spec: t.Optional[AnyType]
+
+// create function in bentoml cli
+    // cls,
+    //name: Tag | str,
+    //module: str,
+    //api_version: str,
+    //signatures: ModelSignaturesType,
+    //labels: dict[str, str] | None = None,
+    //options: ModelOptions | None = None,
+    //custom_objects: dict[str, t.Any] | None = None,
+    //metadata: dict[str, t.Any] | None = None,
+    //context: ModelContext,
+
+
+  // https://github.com/bentoml/BentoML/blob/064e08759fc4f52ed46ec249208d802031186ac6/src/bentoml/_internal/models/model.py#L183
+
+  export interface ModelInfo {
+    tag: string;
+    module: string;
+    api_version: string;
+    signatures: string;
+    labels: any[];
+    options: any[];
+    metadata: string;
+    context: string;
+    creation_time: string;  }
+  
+export interface Model {
+    name: string;
+    model_fs: string;
+    model_info: ModelInfo;
+    custom_objects: string;
+    _internal: boolean;
+  }
+
+export interface SimpleModel {
+  tag: string;
+  module: string;
+  size: string;
+  creation_time: string;
+}
+
+export interface Bento {
+  tag: string;
+  size: string;
+  model_size: string;
+  creation_time: string;
+}
