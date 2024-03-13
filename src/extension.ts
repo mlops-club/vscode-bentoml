@@ -1,13 +1,17 @@
 import * as vscode from 'vscode';
 import * as consts from './common/constants';
-import { BentoMlExtensionSettings as BentoMlExtensionSettings, getExtensionSettings, getInterpreterFromSetting } from './common/settings';
+import {
+  BentoMlExtensionSettings as BentoMlExtensionSettings,
+  getExtensionSettings,
+  getInterpreterFromSetting,
+} from './common/settings';
 import { registerLogger, traceInfo, traceLog } from './common/logging';
 import { createOutputChannel } from './common/vscodeapi';
 import { initializePython } from './common/python';
 import { ensureBentoMlCliIsAvailable } from './common/bentoml/install-cli';
 import { Model, SimpleModel, Bento } from './common/bentoml/models';
-import {getModels, getBentos, deleteModel, deleteBento } from './common/bentoml/cli-client';
-import { BentoMlModelsTreeDataProvider, BentoMlModel } from './common/ui/bentoml-models-tree-view';
+import { getModels, getBentos, deleteModel, deleteBento, showBentos, showModels } from './common/bentoml/cli-client';
+import { BentoMlModelsTreeDataProvider, BentoMLModelTreeItem } from './common/ui/bentoml-models-tree-view';
 import { BentoMlBentosTreeDataProvider, BentoMlBento } from './common/ui/bentoml-bentos-tree-view';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -44,8 +48,6 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
-
-
   /**
    * Register the BentoML Models tree view.
    *
@@ -72,6 +74,7 @@ export async function activate(context: vscode.ExtensionContext) {
    *
    * These commands are defined in the package.json file.
    */
+
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.refreshModelEntry`, async () => {
     await loadPythonExtension(context);
     bentoMlModelsTreeProvider.refresh();
@@ -81,17 +84,56 @@ export async function activate(context: vscode.ExtensionContext) {
     bentoMlBentosTreeProvider.refresh();
   });
 
-  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openModelInBrowser`, async (model: BentoMlModel) => {
-    vscode.env.openExternal(vscode.Uri.parse("https://docs.bentoml.com"));
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openModelInBrowser`, async (model: BentoMLModelTreeItem) => {
+    vscode.env.openExternal(vscode.Uri.parse('https://docs.bentoml.com'));
   });
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openBentoInBrowser`, async (bento: BentoMlBento) => {
-    vscode.env.openExternal(vscode.Uri.parse("https://docs.bentoml.com"));
+    vscode.env.openExternal(vscode.Uri.parse('https://docs.bentoml.com'));
   });
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.copyValueToClipboard`, async (treeItem: vscode.TreeItem) => {
     if (treeItem.description) {
       await vscode.env.clipboard.writeText(treeItem.description as string);
       vscode.window.showInformationMessage(`${treeItem.label} was copied to your clipboard`);
+    }
+  });
+
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.viewBentos`, async (bento: BentoMlBento) => {
+    const response = await showBentos(bento.bento.tag as string);
+
+    // Parse YAML content
+    const yamlContent = yaml.dump(response);
+
+    // Open the YAML content in a new untitled document in Visual Studio Code
+    vscode.workspace.openTextDocument({ content: yamlContent, language: 'yaml' }).then(
+      (doc) => {
+        vscode.window.showTextDocument(doc);
+      },
+      (err) => {
+        console.error(err);
+      }
+    );
+  });
+
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.viewModels`, async (model: BentoMLModelTreeItem) => {
+    const modelYaml: string = await showModels(model.label as string);
+
+    // Parse YAML content
+    //const yamlContent = yaml.dump(response);
+
+    // Open the YAML content in a new untitled document in Visual Studio Code
+    try {
+      const modelYaml: string = await showModels(model.label as string);
+      // Parse YAML content
+      //const yamlContent = yaml.dump(response);
+      // Open the YAML content in a new untitled document in Visual Studio Code
+      const doc: vscode.TextDocument = await vscode.workspace.openTextDocument({
+        content: modelYaml,
+        language: 'yaml',
+      });
+      await vscode.window.showTextDocument(doc);
+    } catch (err) {
+      console.error(err);
     }
   });
 
@@ -105,8 +147,6 @@ export async function activate(context: vscode.ExtensionContext) {
     deleteBento(bento);
     //refresh();
   });
-
-
 
   let disposable = vscode.commands.registerCommand(`${consts.EXTENSION_ID}.installPythonDependencies`, async () => {
     // The code you place here will be executed every time your command is executed
