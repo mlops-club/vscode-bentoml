@@ -109,6 +109,16 @@
         "icon": "$(remove)"
       },
       {
+        "command": "bentoml.viewBentos",
+        "title": "View BentoML Bento",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "bentoml.viewModels",
+        "title": "View BentoML Model",
+        "icon": "$(eye)"
+      },
+      {
         "command": "bentoml.deleteBento",
         "title": "Delete BentoML Bento",
         "icon": "$(remove)"
@@ -140,6 +150,16 @@
         {
           "command": "bentoml.openBentoInBrowser",
           "when": "view == bentoml-bentos && viewItem == top-level-bentoml-bento-tree-item",
+          "group": "inline"
+        },
+        {
+          "command": "bentoml.viewBentos",
+          "when": "view == bentoml-bentos && viewItem == top-level-bentoml-bento-tree-item",
+          "group": "inline"
+        },
+        {
+          "command": "bentoml.viewModels",
+          "when": "view == bentoml-models && viewItem == top-level-bentoml-model-tree-item",
           "group": "inline"
         },
         {
