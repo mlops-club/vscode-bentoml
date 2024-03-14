@@ -11,14 +11,14 @@ A VS Code extension inspired by the Docker extension that provides
 2. a UI interface over the `bentoml` CLI
 
 ## Onboarding to the Team
+
 - Gain access to this Notion doc: https://www.notion.so/shilongjaycui/BentoML-VS-Code-Extension-2cabc38ceae74181bf3544993d123903?pvs=4
-   - The Notion doc contains external links such as the Slack channel in which the team members communicates with one another.
-   - If you don't have access to this Notion doc, send a request to Jay at `shilongjaycui@gmail.com`.
+  - The Notion doc contains external links such as the Slack channel in which the team members communicates with one another.
+  - If you don't have access to this Notion doc, send a request to Jay at `shilongjaycui@gmail.com`.
 
 ## How this extension fits into a Cloud or on-prem Architecture
 
 <!-- <img width="600" alt="image" src="https://github.com/mlops-club/vscode-bentoml/assets/32227767/6f01df5a-2646-4716-aa00-bb88ae290fd0"> -->
-
 
 ## Contributing
 
@@ -37,7 +37,7 @@ VS Code makes it really easy to run extensions and try out code changes:
 1. be sure you have NodeJS installed, some had issues because they had the wrong Node version
 2. go to the `src/extension.ts` file and press `F5` to start a debugging session
 
-### Getting up to speed 
+### Getting up to speed
 
 #### What is BentoML?
 
