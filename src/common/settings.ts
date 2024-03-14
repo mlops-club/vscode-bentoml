@@ -135,8 +135,7 @@ export async function getGlobalSettings(namespace: string): Promise<BentoMlExten
   }
 
   const settings: BentoMlExtensionSettings = {
-    bentomlHomeDir:
-      getGlobalValue<string>(config, 'bentomlHomeDir') ?? getDefaultBentoMlHomeDir(),
+    bentomlHomeDir: getGlobalValue<string>(config, 'bentomlHomeDir') ?? getDefaultBentoMlHomeDir(),
     interpreter: interpreter ?? [],
   };
   return settings;
