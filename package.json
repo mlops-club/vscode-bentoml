@@ -3,7 +3,7 @@
   "publisher": "mlops-club",
   "version": "0.0.0",
   "displayName": "BentoML",
-  "icon": "src/resources/bentoml-logo.svg",
+  "icon": "src/resources/bentoml-logo.png",
   "author": {
     "email": "eric.russia97+mlops-club@gmail.com",
     "name": "MLOps Club"
@@ -206,6 +206,7 @@
   ],
   "devDependencies": {
     "@types/fs-extra": "^11.0.3",
+    "@types/js-yaml": "^4.0.9",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
     "@types/vscode": "^1.83.0",
@@ -225,6 +226,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "fs-extra": "^11.1.1"
+    "fs-extra": "^11.1.1",
+    "js-yaml": "^4.1.0"
   }
 }

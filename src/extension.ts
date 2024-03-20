@@ -13,6 +13,7 @@ import { Model, SimpleModel, Bento } from './common/bentoml/models';
 import { getModels, getBentos, deleteModel, deleteBento, showBentos, showModels } from './common/bentoml/cli-client';
 import { BentoMlModelsTreeDataProvider, BentoMLModelTreeItem } from './common/ui/bentoml-models-tree-view';
 import { BentoMlBentosTreeDataProvider, BentoMlBento } from './common/ui/bentoml-bentos-tree-view';
+import yaml from 'js-yaml';
 
 export async function activate(context: vscode.ExtensionContext) {
   /**
