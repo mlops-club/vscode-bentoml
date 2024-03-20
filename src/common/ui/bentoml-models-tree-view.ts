@@ -4,12 +4,34 @@ import * as vscode from 'vscode';
 import { Model, SimpleModel } from '../bentoml/models';
 import { getModels } from '../bentoml/cli-client';
 
-export class BentoMlModelsTreeDataProvider implements vscode.TreeDataProvider<BentoMLModelTreeItem | vscode.TreeItem> {
+/**
+ *
+ * class Tree extends TreeDataProvider<   BentoMLModelTreeItem | TreeItem > {
+ *
+ * BentoMLModelTreeItem -- this.label = model.tag ("<model name>:<model version>")
+ *    |-> [  TreeItem -- this.label =    ]
+ *
+ *
+ * BentoMLModelNameGroupTreeItem  (this.label = "<model name>")
+ *    -> [  BentoMLModelTreeItem -- this.label = model.tag ("<model version>") ]
+ *             -> [  TreeItem -- this.label = "Module: <module>"   ]
+ *
+ * Tree.getChildren(element)
+ *  case undefined: return a list of these BentoMLModelNameGroupTreeItem
+ *  case BentoMLModelNameGroupTreeItem: return element.getChildren()
+ *  case BentoMLModelTreeItem: return element.getChildren()
+ *  case TreeItem: return []
+ *
+ */
+
+export class BentoMlModelsTreeDataProvider
+  implements vscode.TreeDataProvider<BentoMLModelNameGroupTreeItem | BentoMLModelVersionTreeItem | vscode.TreeItem>
+{
   constructor(public models: SimpleModel[] = []) {}
 
-  private _onDidChangeTreeData: vscode.EventEmitter<BentoMLModelTreeItem | undefined | null | void> =
-    new vscode.EventEmitter<BentoMLModelTreeItem | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<BentoMLModelTreeItem | undefined | null | void> =
+  private _onDidChangeTreeData: vscode.EventEmitter<BentoMLModelVersionTreeItem | undefined | null | void> =
+    new vscode.EventEmitter<BentoMLModelVersionTreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<BentoMLModelVersionTreeItem | undefined | null | void> =
     this._onDidChangeTreeData.event;
 
   async refresh(): Promise<void> {
@@ -17,41 +39,67 @@ export class BentoMlModelsTreeDataProvider implements vscode.TreeDataProvider<Be
     this._onDidChangeTreeData.fire();
   }
 
-  getTreeItem(element: BentoMLModelTreeItem): vscode.TreeItem {
+  getTreeItem(element: BentoMLModelVersionTreeItem): vscode.TreeItem {
     console.log(`getTreeItem used: ${element}`);
     return element;
   }
 
-  getChildren(element?: BentoMLModelTreeItem): Thenable<BentoMLModelTreeItem[] | vscode.TreeItem[]> {
-    // when the tree view is first opened, element is undefined. This means
-    // this function needs to return the top-level items.
-    console.log(`model element: ${element}`);
+  /**
+   * When the tree view is first opened, element is undefined. This means
+   * this function needs to return the top-level items.
+   */
+  getChildren(
+    element?: BentoMLModelVersionTreeItem
+  ): Thenable<BentoMLModelNameGroupTreeItem[] | BentoMLModelVersionTreeItem[] | vscode.TreeItem[]> {
+    // Tree.getChildren(element)
+    // case undefined: return a list of these BentoMLModelNameGroupTreeItem
+    // case BentoMLModelNameGroupTreeItem: return element.getChildren()
+    // case BentoMLModelTreeItem: return element.getChildren()
+    // case TreeItem: return []
     if (!element) {
-      //const dummy_model = new BentoMlModel(`Model`, vscode.TreeItemCollapsibleState.Collapsed);
-      return Promise.resolve(
-        this.models.map(
-          (model: SimpleModel) => new BentoMLModelTreeItem(model.tag, vscode.TreeItemCollapsibleState.Collapsed, model)
-        )
+      const modelNames: Map<string, SimpleModel[]> = new Map();
+      for (const model of this.models) {
+        const [modelName] = model.tag.split(':');
+        if (!modelNames.has(modelName)) {
+          modelNames.set(modelName, []);
+        }
+        modelNames.get(modelName)?.push(model);
+      }
+      const modelNameItems: BentoMLModelNameGroupTreeItem[] = Array.from(modelNames.entries()).map(
+        ([modelName, models]) => new BentoMLModelNameGroupTreeItem(modelName, models)
       );
-      // return Promise.resolve(
-      //   this.models.map(
-      //     (model: Model) => new BentoMlModel(`Model`, vscode.TreeItemCollapsibleState.Collapsed, model)
-      //   )
-      // );
+      return Promise.resolve(modelNameItems);
+    } else {
+      if (element instanceof BentoMLModelNameGroupTreeItem) {
+        return Promise.resolve(element.getChildren());
+      } else {
+        return Promise.resolve([]);
+      }
     }
-
-    // otherwise, the element is a BentoMlModel, so expanding it should reveal
-    // a list of its details. We show the details as tree items nested underneath.
-
-    const bentomlModelDetails: vscode.TreeItem[] = (
-      element as BentoMLModelTreeItem
-    ).getBentomlModelDetailsAsTreeItems();
-    return Promise.resolve(bentomlModelDetails);
   }
 }
-//return Promise.resolve([element]);
 
-export class BentoMLModelTreeItem extends vscode.TreeItem {
+/**
+ * Group models by name in the `Models` sidebar view.
+ */
+export class BentoMLModelNameGroupTreeItem extends vscode.TreeItem {
+  constructor(
+    public readonly name: string,
+    public readonly models: SimpleModel[]
+  ) {
+    super(name, vscode.TreeItemCollapsibleState.Collapsed);
+    this.contextValue = 'bentoml-model-group-tree-item';
+  }
+
+  getChildren(): BentoMLModelVersionTreeItem[] {
+    const children: BentoMLModelVersionTreeItem[] = this.models.map(
+      (model) => new BentoMLModelVersionTreeItem(model.tag, vscode.TreeItemCollapsibleState.None, model)
+    );
+    return children;
+  }
+}
+
+export class BentoMLModelVersionTreeItem extends vscode.TreeItem {
   iconPath = new vscode.ThemeIcon('cloud');
 
   // setting this value allows us to condition the context menu on the type of tree item like so:
@@ -60,11 +108,11 @@ export class BentoMLModelTreeItem extends vscode.TreeItem {
   contextValue = 'top-level-bentoml-model-tree-item';
 
   constructor(
-    public readonly name: string,
+    public readonly version: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
     public readonly model: SimpleModel
   ) {
-    super(name, collapsibleState);
+    super(version, collapsibleState);
   }
 
   getBentomlModelDetailsAsTreeItems = (): vscode.TreeItem[] => {
