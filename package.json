@@ -79,6 +79,10 @@
         {
           "id": "bentoml-bentos",
           "name": "Bentos"
+        },
+        {
+          "id": "bentoml-serve",
+          "name": "Serve"
         }
       ]
     },
@@ -95,6 +99,11 @@
       {
         "command": "bentoml.refreshBentoEntry",
         "title": "BentoML: Refresh Bentos",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "bentoml.refreshServeEntry",
+        "title": "BentoML: Refresh Serve",
         "icon": "$(refresh)"
       },
       {
@@ -130,6 +139,11 @@
       {
         "command": "bentoml.copyValueToClipboard",
         "title": "Copy value to clipboard"
+      },
+      {
+        "command": "bentoml.serve",
+        "title": "Serve Model",
+        "icon": "$(play)"
       }
     ],
     "menus": {
@@ -142,6 +156,11 @@
         {
           "command": "bentoml.refreshBentoEntry",
           "when": "view == bentoml-bentos",
+          "group": "navigation"
+        },
+        {
+          "command": "bentoml.refreshServeEntry",
+          "when": "view == bentoml-serve",
           "group": "navigation"
         }
       ],
@@ -179,6 +198,11 @@
         {
           "command": "bentoml.copyValueToClipboard",
           "when": "view == bentoml-models && viewItem == top-level-bentoml-model-tree-item",
+          "group": "inline"
+        },
+        {
+          "command": "bentoml.serve",
+          "when": "view == bentoml-serve && viewItem == top-level-bentoml-serve-tree-item",
           "group": "inline"
         }
       ]

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as consts from './common/constants';
+import * as path from 'path';
 import {
   BentoMlExtensionSettings as BentoMlExtensionSettings,
   getExtensionSettings,
@@ -9,10 +10,11 @@ import { registerLogger, traceInfo, traceLog } from './common/logging';
 import { createOutputChannel } from './common/vscodeapi';
 import { initializePython } from './common/python';
 import { ensureBentoMlCliIsAvailable } from './common/bentoml/install-cli';
-import { Model, SimpleModel, Bento } from './common/bentoml/models';
-import { getModels, getBentos, deleteModel, deleteBento, showBentos, showModels } from './common/bentoml/cli-client';
+import { Model, SimpleModel, Bento, BentoFile } from './common/bentoml/models';
+import { getModels, getBentos, deleteModel, deleteBento, showBentos, showModels, serve } from './common/bentoml/cli-client';
 import { BentoMlModelsTreeDataProvider, BentoMLModelTreeItem } from './common/ui/bentoml-models-tree-view';
 import { BentoMlBentosTreeDataProvider, BentoMlBento } from './common/ui/bentoml-bentos-tree-view';
+import { BentoMlServeTreeDataProvider } from './common/ui/bentoml-serve-tree-view';
 import yaml from 'js-yaml';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -67,6 +69,9 @@ export async function activate(context: vscode.ExtensionContext) {
   const bentoMlBentosTreeProvider = new BentoMlBentosTreeDataProvider();
   vscode.window.registerTreeDataProvider('bentoml-bentos', bentoMlBentosTreeProvider);
 
+  const bentoMlServeTreeDataProvider = new BentoMlServeTreeDataProvider();
+  vscode.window.registerTreeDataProvider('bentoml-serve', bentoMlServeTreeDataProvider);
+
   /**
    * Register the commands that are used by this extension.
    *
@@ -84,6 +89,11 @@ export async function activate(context: vscode.ExtensionContext) {
     await loadPythonExtension(context);
     bentoMlBentosTreeProvider.refresh();
   });
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.refreshServeEntry`, async () => {
+      await loadPythonExtension(context);
+      bentoMlServeTreeDataProvider.refresh();
+  });
+
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openModelInBrowser`, async (model: BentoMLModelTreeItem) => {
     vscode.env.openExternal(vscode.Uri.parse('https://docs.bentoml.com'));
@@ -147,6 +157,20 @@ export async function activate(context: vscode.ExtensionContext) {
     await getBentos();
     deleteBento(bento);
     //refresh();
+  });
+
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.serve`, async ({bentoFile}) => {
+    const { absolutePath,service } = bentoFile;
+    const directoryPath = path.dirname(absolutePath);
+    try{
+      const result = await serve(directoryPath);
+      if(result.toLowerCase().includes('error')){
+        throw new Error(result);
+      }
+      await vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] Started serving ${service}!`);
+    }catch(e){
+      await vscode.window.showErrorMessage(`[${consts.EXTENSION_NAME}] Failed to serve ${service}: ${e}`);
+    }
   });
 
   let disposable = vscode.commands.registerCommand(`${consts.EXTENSION_ID}.installPythonDependencies`, async () => {

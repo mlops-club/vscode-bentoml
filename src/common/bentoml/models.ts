@@ -143,3 +143,47 @@ export interface Bento {
   model_size: string;
   creation_time: string;
 }
+
+export interface BentoFile {
+  absolutePath: string;
+  service: string;
+  labels?: Record<string, string>;
+  include?: string[];
+  python?: {
+    packages?: string[];
+    requirements_txt?: string;
+    lock_packages?: boolean;
+    index_url?: string;
+    no_index?: boolean;
+    trusted_host?: string[];
+    find_links?: string[];
+    extra_index_url?: string[];
+    pip_args?: string;
+    wheels?: string[];
+  };
+  models?: Array<string | {
+    tag: string;
+    filter?: string;
+    alias?: string;
+  }>;
+  conda?: {
+    channels?: string[];
+    dependencies?: string[];
+    pip?: string[];
+    environment_yml?: string;
+  };
+  docker?: {
+    distro?: string;
+    python_version?: string;
+    cuda_version?: string;
+    system_packages?: string[];
+    env?: Record<string, string>;
+    setup_script?: string;
+    base_image?: string;
+    dockerfile_template?: string;
+  };
+  build_ctx?: string;
+  bentofile?: string;
+  description?: string;
+}
+
