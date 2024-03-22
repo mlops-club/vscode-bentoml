@@ -9,3 +9,4 @@ node_modules
 *.log
 coverage
 __pycache__/
+.DS_Store

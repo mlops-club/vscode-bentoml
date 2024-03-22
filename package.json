@@ -3,7 +3,7 @@
   "publisher": "mlops-club",
   "version": "0.0.0",
   "displayName": "BentoML",
-  "icon": "src/resources/bentoml-logo.svg",
+  "icon": "src/resources/bentoml-logo.png",
   "author": {
     "email": "eric.russia97+mlops-club@gmail.com",
     "name": "MLOps Club"
@@ -24,6 +24,10 @@
     {
       "name": "Noor Assi",
       "url": "https://www.linkedin.com/in/noor-assi/"
+    },
+    {
+      "name": "Oguz Vuruskaner",
+      "url": "https://www.linkedin.com/in/oguz-vuruskaner-5969a8155"
     }
   ],
   "license": "Apache-2.0",
@@ -75,6 +79,10 @@
         {
           "id": "bentoml-bentos",
           "name": "Bentos"
+        },
+        {
+          "id": "bentoml-serve",
+          "name": "Serve"
         }
       ]
     },
@@ -91,6 +99,11 @@
       {
         "command": "bentoml.refreshBentoEntry",
         "title": "BentoML: Refresh Bentos",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "bentoml.refreshServeEntry",
+        "title": "BentoML: Refresh Serve",
         "icon": "$(refresh)"
       },
       {
@@ -126,6 +139,11 @@
       {
         "command": "bentoml.copyValueToClipboard",
         "title": "Copy value to clipboard"
+      },
+      {
+        "command": "bentoml.serve",
+        "title": "Serve Model",
+        "icon": "$(play)"
       }
     ],
     "menus": {
@@ -138,6 +156,11 @@
         {
           "command": "bentoml.refreshBentoEntry",
           "when": "view == bentoml-bentos",
+          "group": "navigation"
+        },
+        {
+          "command": "bentoml.refreshServeEntry",
+          "when": "view == bentoml-serve",
           "group": "navigation"
         }
       ],
@@ -176,6 +199,11 @@
           "command": "bentoml.copyValueToClipboard",
           "when": "view == bentoml-models && viewItem == top-level-bentoml-model-tree-item",
           "group": "inline"
+        },
+        {
+          "command": "bentoml.serve",
+          "when": "view == bentoml-serve && viewItem == top-level-bentoml-serve-tree-item",
+          "group": "inline"
         }
       ]
     }
@@ -202,6 +230,7 @@
   ],
   "devDependencies": {
     "@types/fs-extra": "^11.0.3",
+    "@types/js-yaml": "^4.0.9",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
     "@types/vscode": "^1.83.0",
@@ -221,6 +250,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "fs-extra": "^11.1.1"
+    "fs-extra": "^11.1.1",
+    "js-yaml": "^4.1.0"
   }
 }
