@@ -93,15 +93,7 @@
       },
       {
         "command": "bentoml.serveBentoInTerminal",
-        "title": "BentoML: Serve Bento in new Terminal",
-        "input": [
-          {
-            "type": "promptString",
-            "id": "bentoTag",
-            "description": "Bento Tag",
-            "prompt": "Enter the Bento Tag"
-          }
-        ]
+        "title": "BentoML: Serve Bento in new Terminal"
       },
       {
         "command": "bentoml.refreshModelEntry",
