@@ -92,6 +92,10 @@
         "title": "BentoML: Install Python Dependencies"
       },
       {
+        "command": "bentoml.serveBentoInTerminal",
+        "title": "BentoML: Serve Bento in new Terminal"
+      },
+      {
         "command": "bentoml.refreshModelEntry",
         "title": "BentoML: Refresh models",
         "icon": "$(refresh)"

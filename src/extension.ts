@@ -8,14 +8,23 @@ import {
 } from './common/settings';
 import { registerLogger, traceInfo, traceLog } from './common/logging';
 import { createOutputChannel } from './common/vscodeapi';
-import { initializePython } from './common/python';
+import { getPathToActivePythonInterpreter, initializePython } from './common/python';
 import { ensureBentoMlCliIsAvailable } from './common/bentoml/install-cli';
 import { Model, SimpleModel, Bento, BentoFile } from './common/bentoml/models';
-import { getModels, getBentos, deleteModel, deleteBento, showBentos, showModels, serve } from './common/bentoml/cli-client';
+import {
+  getModels,
+  getBentos,
+  deleteModel,
+  deleteBento,
+  showBentos,
+  showModels,
+  serve,
+} from './common/bentoml/cli-client';
 import { BentoMlModelsTreeDataProvider, BentoMLModelTreeItem } from './common/ui/bentoml-models-tree-view';
 import { BentoMlBentosTreeDataProvider, BentoMlBento } from './common/ui/bentoml-bentos-tree-view';
 import { BentoMlServeTreeDataProvider } from './common/ui/bentoml-serve-tree-view';
 import yaml from 'js-yaml';
+import { serveBentoInTerminalCommand } from './common/commands/serve-bento-in-terminal';
 
 export async function activate(context: vscode.ExtensionContext) {
   /**
@@ -90,10 +99,11 @@ export async function activate(context: vscode.ExtensionContext) {
     bentoMlBentosTreeProvider.refresh();
   });
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.refreshServeEntry`, async () => {
-      await loadPythonExtension(context);
-      bentoMlServeTreeDataProvider.refresh();
+    await loadPythonExtension(context);
+    bentoMlServeTreeDataProvider.refresh();
   });
 
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.serveBentoInTerminal`, serveBentoInTerminalCommand);
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openModelInBrowser`, async (model: BentoMLModelTreeItem) => {
     vscode.env.openExternal(vscode.Uri.parse('https://docs.bentoml.com'));
@@ -159,16 +169,16 @@ export async function activate(context: vscode.ExtensionContext) {
     //refresh();
   });
 
-  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.serve`, async ({bentoFile}) => {
-    const { absolutePath,service } = bentoFile;
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.serve`, async ({ bentoFile }) => {
+    const { absolutePath, service } = bentoFile;
     const directoryPath = path.dirname(absolutePath);
-    try{
+    try {
       const result = await serve(directoryPath);
-      if(result.toLowerCase().includes('error')){
+      if (result.toLowerCase().includes('error')) {
         throw new Error(result);
       }
       await vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] Started serving ${service}!`);
-    }catch(e){
+    } catch (e) {
       await vscode.window.showErrorMessage(`[${consts.EXTENSION_NAME}] Failed to serve ${service}: ${e}`);
     }
   });
