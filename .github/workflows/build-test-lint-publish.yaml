@@ -13,7 +13,7 @@ on:
     branches:
       - main # or the name of your default branch
   pull_request:
-    types: 
+    types:
       - opened
       - synchronize
   workflow_dispatch:

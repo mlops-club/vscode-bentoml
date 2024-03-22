@@ -161,11 +161,14 @@ export interface BentoFile {
     pip_args?: string;
     wheels?: string[];
   };
-  models?: Array<string | {
-    tag: string;
-    filter?: string;
-    alias?: string;
-  }>;
+  models?: Array<
+    | string
+    | {
+        tag: string;
+        filter?: string;
+        alias?: string;
+      }
+  >;
   conda?: {
     channels?: string[];
     dependencies?: string[];
@@ -186,4 +189,3 @@ export interface BentoFile {
   bentofile?: string;
   description?: string;
 }
-
