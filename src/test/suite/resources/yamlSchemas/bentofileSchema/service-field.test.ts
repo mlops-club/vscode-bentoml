@@ -6,7 +6,6 @@ import * as assert from 'assert';
 import { describe, it } from 'mocha';
 import { validateBentofile } from './utils';
 
-
 describe('BentoFile JSON Schema: service', () => {
   it('should have a service name', async () => {
     const bentoFile = `
@@ -23,7 +22,7 @@ describe('BentoFile JSON Schema: service', () => {
         `;
     const valid = validateBentofile(bentoFile);
     assert.strictEqual(valid, false);
-  })
+  });
 
   it('should have a valid module path before the colon', async () => {
     const bentoFile = `
@@ -31,7 +30,7 @@ describe('BentoFile JSON Schema: service', () => {
         `;
     const valid = validateBentofile(bentoFile);
     assert.strictEqual(valid, false);
-  })
+  });
 
   it('should have a valid Python identifier after the colon', async () => {
     const bentoFile = `
@@ -39,6 +38,5 @@ describe('BentoFile JSON Schema: service', () => {
         `;
     const valid = validateBentofile(bentoFile);
     assert.strictEqual(valid, false);
-  })
-
+  });
 });
