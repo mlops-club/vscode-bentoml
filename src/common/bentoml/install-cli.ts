@@ -1,5 +1,9 @@
 import { checkAndPromptToInstallPythonPackages } from '../ui/install-python-libs-modal';
-import { tryGetPathToActivePythonInterpreter, promptIfPythonInterpreterIsNotConfigured, promptToSelectPythonInterpreter } from '../python';
+import {
+  tryGetPathToActivePythonInterpreter,
+  promptIfPythonInterpreterIsNotConfigured,
+  promptToSelectPythonInterpreter,
+} from '../python';
 import * as vscode from 'vscode';
 
 export const ensureBentoMlCliIsAvailable = async () => {
@@ -8,6 +12,3 @@ export const ensureBentoMlCliIsAvailable = async () => {
   const interpreterFpath = (await tryGetPathToActivePythonInterpreter()) as string;
   await checkAndPromptToInstallPythonPackages(interpreterFpath, ['bentoml']);
 };
-
-
-

@@ -373,7 +373,6 @@ export const promptIfPythonInterpreterIsNotConfigured = async (): Promise<void> 
   }
 };
 
-
 /**
  * Display a prompt to the user to select a Python interpreter.
  */
@@ -387,4 +386,4 @@ export const promptToSelectPythonInterpreter = async (): Promise<void> => {
     // Assuming newer Python extension version
     await vscode.commands.executeCommand('python.setInterpreter');
   }
-}
+};
