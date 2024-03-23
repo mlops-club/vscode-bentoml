@@ -8,6 +8,7 @@
     "ms-vscode-remote.remote-ssh",
     "GitHub.copilot",
     "redhat.vscode-yaml",
-    "ms-vsliveshare.vsliveshare"
+    "ms-vsliveshare.vsliveshare",
+    "hbenl.vscode-mocha-test-adapter"
   ]
 }
