@@ -343,27 +343,48 @@ export async function installPythonPackagesInEnv(
   return result.exitCode === 0;
 }
 
-export const getPathToActivePythonInterpreter = async (): Promise<string | undefined> => {
+export const tryGetPathToActivePythonInterpreter = async (): Promise<string> => {
   const projectRoot = await getProjectRoot();
   const workspaceSettings = await getWorkspaceSettings(SETTINGS_NAMESPACE, projectRoot, true);
-  return workspaceSettings.interpreter[0];
+  const activePythonInterpreterFpath: string | undefined = workspaceSettings.interpreter[0];
+  const interpreterIsSet = activePythonInterpreterFpath !== undefined && activePythonInterpreterFpath.length > 0;
+  if (interpreterIsSet) {
+    return activePythonInterpreterFpath;
+  }
+  const errorMsg = `Python interpreter not found. Value: ${activePythonInterpreterFpath}`;
+  traceError(errorMsg);
+  throw new Error(errorMsg);
 };
 
-export const promptIfPythonInterpreterIsNotConfigured = async (): Promise<boolean> => {
-  const pathToActivePythonInterpreter: string | undefined = await getPathToActivePythonInterpreter();
-  const interpreterNotSet = pathToActivePythonInterpreter === undefined || pathToActivePythonInterpreter.length === 0;
-
-  if (interpreterNotSet) {
-    // updateStatus(vscode.l10n.t('Please select a Python interpreter.'), vscode.LanguageStatusSeverity.Error);
+/**
+ * Prompt the user to select a python interpreter if one is not configured.
+ */
+export const promptIfPythonInterpreterIsNotConfigured = async (): Promise<void> => {
+  try {
+    await tryGetPathToActivePythonInterpreter();
+  } catch (err) {
     traceError(
       'Python interpreter missing:\r\n' +
         '[Option 1] Select python interpreter using the ms-python.python.\r\n' +
         `[Option 2] Set an interpreter using "${SETTINGS_NAMESPACE}.interpreter" setting.\r\n`,
       'Please use Python 3.8 or greater.'
     );
-    // display an error message to the user
-    vscode.window.showErrorMessage(`[${consts.EXTENSION_NAME}] Please select a Python interpreter.`);
-    return false;
+    await promptToSelectPythonInterpreter();
   }
-  return true;
 };
+
+
+/**
+ * Display a prompt to the user to select a Python interpreter.
+ */
+export const promptToSelectPythonInterpreter = async (): Promise<void> => {
+  const selection = await vscode.window.showInformationMessage(
+    `[${consts.EXTENSION_NAME}] No Python interpreter selected. Please select one.`,
+    'Select Python Interpreter'
+  );
+
+  if (selection === 'Select Python Interpreter') {
+    // Assuming newer Python extension version
+    await vscode.commands.executeCommand('python.setInterpreter');
+  }
+}

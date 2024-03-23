@@ -8,16 +8,16 @@ import {
 } from './common/settings';
 import { registerLogger, traceError, traceInfo, traceLog } from './common/logging';
 import { createOutputChannel } from './common/vscodeapi';
-import { initializePython } from './common/python';
+import { initializePython, promptIfPythonInterpreterIsNotConfigured } from './common/python';
 import { ensureBentoMlCliIsAvailable } from './common/bentoml/install-cli';
 import { SimpleModel, Bento } from './common/bentoml/models';
 import {
-  getModels,
-  getBentos,
+  listModels,
+  listBentos,
   deleteModel,
   deleteBento,
-  showBentos,
-  showModels,
+  getBentoInfo,
+  getModelInfo,
   serve,
 } from './common/bentoml/cli-client';
 import {
@@ -54,8 +54,8 @@ export async function activate(context: vscode.ExtensionContext) {
    * The user of the extension can define settings in their .vscode/settings.json or global settings.
    */
   await loadPythonExtension(context);
+  await promptIfPythonInterpreterIsNotConfigured();
   await ensureBentoMlCliIsAvailable();
-  await getModels();
   const bentoMlExtensionSettings: BentoMlExtensionSettings = await getExtensionSettings();
   // print settings whenever they change
   context.subscriptions.push(
@@ -127,31 +127,32 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.viewBentos`, async (bento: BentoMlBento) => {
-    const response = await showBentos(bento.bento.tag as string);
+    const response = await getBentoInfo(bento.bento.tag as string);
 
     // Parse YAML content
     const yamlContent = yaml.dump(response);
 
     // Open the YAML content in a new untitled document in Visual Studio Code
-    vscode.workspace.openTextDocument({ content: yamlContent, language: 'yaml' }).then(
-      (doc) => {
-        vscode.window.showTextDocument(doc);
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
+    try {
+      const doc: vscode.TextDocument = await vscode.workspace.openTextDocument({
+        content: yamlContent,
+        language: 'yaml',
+      });
+      await vscode.window.showTextDocument(doc);
+    } catch (err) {
+      traceError(err);
+    }
   });
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.viewModels`, async (model: BentoMLModelVersionTreeItem) => {
-    const modelYaml: string = await showModels(model.label as string);
+    const modelYaml: string = await getModelInfo(model.label as string);
 
     // Parse YAML content
     //const yamlContent = yaml.dump(response);
 
     // Open the YAML content in a new untitled document in Visual Studio Code
     try {
-      const modelYaml: string = await showModels(model.label as string);
+      const modelYaml: string = await getModelInfo(model.label as string);
       // Open the YAML content in a new untitled document in Visual Studio Code
       const doc: vscode.TextDocument = await vscode.workspace.openTextDocument({
         content: modelYaml,
@@ -165,12 +166,12 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.deleteModel`, async (model: SimpleModel) => {
-    await getModels();
+    await listModels();
     deleteModel(model);
     bentoMlModelsTreeProvider.refresh();
   });
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.deleteBento`, async (bento: Bento) => {
-    await getBentos();
+    await listBentos();
     deleteBento(bento);
     bentoMlBentosTreeProvider.refresh();
   });

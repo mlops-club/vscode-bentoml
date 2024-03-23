@@ -2,7 +2,7 @@
 
 import * as vscode from 'vscode';
 import { Bento } from '../bentoml/models';
-import { getBentos } from '../bentoml/cli-client';
+import { listBentos } from '../bentoml/cli-client';
 
 export class BentoMlBentosTreeDataProvider implements vscode.TreeDataProvider<BentoMlBento | vscode.TreeItem> {
   constructor(public bentos: Bento[] = []) {}
@@ -13,7 +13,7 @@ export class BentoMlBentosTreeDataProvider implements vscode.TreeDataProvider<Be
   readonly onDidChangeTreeData: vscode.Event<BentoMlBento | undefined | null | void> = this._onDidChangeTreeData.event;
 
   async refresh(): Promise<void> {
-    this.bentos = await getBentos();
+    this.bentos = await listBentos();
     this._onDidChangeTreeData.fire();
   }
 

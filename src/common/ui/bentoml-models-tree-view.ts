@@ -2,7 +2,7 @@
 
 import * as vscode from 'vscode';
 import { Model, SimpleModel } from '../bentoml/models';
-import { getModels } from '../bentoml/cli-client';
+import { listModels } from '../bentoml/cli-client';
 
 /**
  *
@@ -35,7 +35,7 @@ export class BentoMlModelsTreeDataProvider
     this._onDidChangeTreeData.event;
 
   async refresh(): Promise<void> {
-    this.models = await getModels();
+    this.models = await listModels();
     this._onDidChangeTreeData.fire();
   }
 

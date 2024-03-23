@@ -1,15 +1,13 @@
 import { checkAndPromptToInstallPythonPackages } from '../ui/install-python-libs-modal';
-import { getPathToActivePythonInterpreter, promptIfPythonInterpreterIsNotConfigured } from '../python';
+import { tryGetPathToActivePythonInterpreter, promptIfPythonInterpreterIsNotConfigured, promptToSelectPythonInterpreter } from '../python';
 import * as vscode from 'vscode';
 
 export const ensureBentoMlCliIsAvailable = async () => {
-  const pythonInterpreterIsConfigured: boolean = await promptIfPythonInterpreterIsNotConfigured();
-  if (!pythonInterpreterIsConfigured) {
-    vscode.window.showErrorMessage('Python interpreter is not configured');
-    return;
-  }
-
+  await promptIfPythonInterpreterIsNotConfigured();
   // check to see if the bentoml CLI is installed with pip, by running pip
-  const interpreterFpath = (await getPathToActivePythonInterpreter()) as string;
+  const interpreterFpath = (await tryGetPathToActivePythonInterpreter()) as string;
   await checkAndPromptToInstallPythonPackages(interpreterFpath, ['bentoml']);
 };
+
+
+
