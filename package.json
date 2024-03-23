@@ -1,7 +1,7 @@
 {
   "name": "bentoml",
   "publisher": "mlops-club",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "displayName": "BentoML",
   "icon": "src/resources/bentoml-logo.png",
   "author": {
@@ -223,7 +223,7 @@
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src --ext ts --fix",
     "format": "prettier --write ./",
-    "test": "mv .vscode-test/user-data/1. .vscode-test/user-data/1.84-main.sock; c8 node ./out/test/runTest.js",
+    "test": "c8 node ./out/test/runTest.js",
     "clean": "bash run.sh clean",
     "install-python-deps": "pip install bentoml",
     "serve-coverage-report": "python -m http.server --directory coverage/lcov-report/ 80"
@@ -240,7 +240,6 @@
     "@types/vscode": "^1.83.0",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
-    "@vscode/test-electron": "^2.3.6",
     "c8": "^8.0.1",
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
@@ -254,6 +253,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@vscode/test-electron": "^2.3.9",
     "fs-extra": "^11.1.1",
     "js-yaml": "^4.1.0"
   }
