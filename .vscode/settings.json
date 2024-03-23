@@ -19,5 +19,20 @@
   "json.validate.enable": true,
   "yaml.schemas": {
     "./src/resources/yamlSchemas/bentofileSchema.json": "**/*bentofile.yaml"
-  }
+  },
+  "mochaExplorer.launcherScript": "node_modules/mocha-explorer-launcher-scripts/vscode-test",
+  // this is key! without this, we cannot set breakpoints in TypeScript test files when using the mocha test explorer extension. This
+  // causes the test explorer extension
+  "mochaExplorer.debuggerConfig": "Extension Tests",
+  "mochaExplorer.autoload": false,
+  "mochaExplorer.ipcRole": "server",
+  "mochaExplorer.env": {
+    "VSCODE_VERSION": "insiders",
+    "ELECTRON_RUN_AS_NODE": null
+  },
+  // SO answer: tests don't run in default bdd mode (https://stackoverflow.com/questions/9795254/nodejs-mocha-suite-is-not-defined-error)
+  "mochaExplorer.ui": "tdd",
+  // SO answer: needed for typescript tests (https://stackoverflow.com/questions/68004071/configure-mocha-sidebar-for-typescript-test-file)
+  "mochaExplorer.files": "src/**/*.test.ts",
+  "mochaExplorer.require": "ts-node/register"
 }

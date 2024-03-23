@@ -1,42 +1,146 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "bentofile.yaml",
-  "description": "Configuration schema for a YAML service file type.",
+  "title": "Bentofile",
+  "description": "Schema for BentoML bentofile.yaml configuration",
   "type": "object",
-  "additionalProperties": false,
   "properties": {
     "service": {
       "type": "string",
-      "description": "The name of the service."
+      "description": "Location of the Service object, formatted as `path.to.module:service`. For example: `path.to.service:MyService`.",
+      "pattern": "^[a-zA-Z0-9_.]+:[a-zA-Z0-9_]+$",
+      "examples": ["path.to.service:MyService"]
+    },
+    "description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Inline description in plain text or Markdown format."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Path to an external file containing the description."
+            }
+          },
+          "required": ["path"]
+        }
+      ]
     },
     "labels": {
       "type": "object",
-      "description": "Labels associated with the service.",
       "additionalProperties": {
         "type": "string"
-      }
+      },
+      "description": "Key-value pairs associated with the Bento or models."
     },
     "include": {
       "type": "array",
-      "description": "Files to include.",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Files to include in the Bento, supporting wildcard characters."
+    },
+    "exclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Files to exclude from the Bento, supports gitignore style patterns."
     },
     "python": {
+      "$ref": "#/definitions/pythonOptions"
+    },
+    "envs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "string" }
+        },
+        "required": ["name", "value"]
+      },
+      "description": "Environment variables to inject into the Bento container."
+    },
+    "conda": {
       "type": "object",
-      "description": "Python-specific configurations.",
+      "properties": {
+        "channels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Custom conda channels to use."
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Custom conda dependencies."
+        },
+        "pip": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Specific pip conda dependencies."
+        },
+        "environment_yml": {
+          "type": "string",
+          "description": "Path to a pre-existing conda environment.yml file."
+        }
+      }
+    },
+    "docker": {
+      "$ref": "#/definitions/dockerOptions"
+    }
+  },
+  "required": ["service"],
+  "definitions": {
+    "pythonOptions": {
+      "type": "object",
       "properties": {
         "packages": {
           "type": "array",
-          "description": "Python packages required for the service.",
-          "items": {
-            "type": "string"
-          }
+          "items": { "type": "string" }
+        },
+        "requirements_txt": { "type": "string" },
+        "lock_packages": { "type": "boolean" },
+        "index_url": { "type": "string" },
+        "no_index": { "type": "boolean" },
+        "trusted_host": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "find_links": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "extra_index_url": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "pip_args": { "type": "string" },
+        "wheels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of paths to wheels to include in the Bento."
         }
       },
-      "required": ["packages"]
+      "description": "Configuration for Python packages and environment."
+    },
+    "dockerOptions": {
+      "type": "object",
+      "properties": {
+        "distro": { "type": "string" },
+        "python_version": { "type": "string" },
+        "cuda_version": { "type": "string" },
+        "system_packages": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "setup_script": { "type": "string" },
+        "base_image": { "type": "string" },
+        "dockerfile_template": { "type": "string" }
+      },
+      "description": "Configuration for Docker image generation."
     }
-  },
-  "required": ["service", "labels", "include", "python"]
+  }
 }
