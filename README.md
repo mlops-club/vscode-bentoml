@@ -95,3 +95,53 @@ Here are a few videos with progress updates. Watching these will step you throug
    source ./venv/bin/activate
    npm run install-python-deps
    ```
+
+### Testing: Writing, running, and debugging tests
+
+#### The `mocha` testing framework
+
+VS Code's extension template from which this project was generated uses the Mocha testing framework.
+
+Although Mocha isn't strictly required, one of the benefits that we get for going with the testing
+framework from the template is that
+
+The [docs for testing VS Code extensions are here](https://code.visualstudio.com/api/working-with-extensions/testing-extension).
+
+#### Run all tests
+
+To run all tests, you can do.
+
+```bash
+npm run test
+```
+
+#### Run all tests, and set a breakpoint
+
+`npm run test` does not stop at breakpoints. To run all tests while respecting breakpoints, select the `"Extension Tests"` launch configuration in the "Run and Debug" sidebar.
+
+Then press the green "Play" button or press `F5`.
+
+![Run and debug sidebar](./docs/testing/run-and-debug-sidebar.png)
+
+> 📌 Note: If you want to make `F5` run the extension and not the tests, you will need to reselect the `"Run Extension" launch configuration in the "Run and debug sidebar".
+
+#### Run a single test (or groups of tests) -- including breakpoints
+
+The easiest way to do this is using the Mocha Test Explorer extension.
+
+We've configured the project's `settings.json` to use the Mocha Test Explorer extension.
+
+1. Install the [Mocha Test Explorer extension](https://marketplace.visualstudio.com/items?itemName=hbenl.vscode-mocha-test-adapter) in VS Code (extension id: `hbenl.vscode-mocha-test-adapter`)
+   This will allow VS Code's test explorer to show the tests.
+
+   ![test explorer](./docs/testing/test-explorer.png)
+
+2. Try setting a break point in a test!
+
+   ![breakpoint in test](./docs/testing/breakpoint-in-test.png)
+
+To trigger your break point, you can run all tests, or select a test (or group of tests) in the Test Explorer
+![alt text](./docs/testing/test-explorer-select-test.png)
+
+Or you can click the context action button above a test in code!
+![alt text](./docs/testing/test-debug-context-action.png)
