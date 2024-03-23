@@ -6,9 +6,9 @@
   "properties": {
     "service": {
       "type": "string",
-      "description": "Location of the Service object, formatted as `path.to.module:service`. For example: `path.to.service:MyService`.",
-      "pattern": "^[a-zA-Z0-9_.]+:[a-zA-Z0-9_]+$",
-      "examples": ["path.to.service:MyService"]
+      "pattern": "^\\s*([A-z_]+\\.?)+[A-z_]+:\\s*([A-z_][A-z0-9_]*)\\s*$",
+      "examples": ["path.to.service:MyService", "service:svc", "service:SVC"],
+      "markdownDescription": "#### service (required) \n\n This field points to the location of a [Service object](https://docs.bentoml.org/en/latest/guides/services.html). \n\nIt's typically defined as service: `\"service:class-name\"`.\n\n- `service`: The Python module, usually the `service.py` file.\n\n- `class-name`: The name of the class-based Service created in `service.py` and decorated with `@bentoml.service`. If you have multiple Services in service.py, you can specify the main Service receiving user requests in `bentofile.yaml`. \n\n Other Services will be started alongside this main Service. \n\n [Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#service)"
     },
     "description": {
       "oneOf": [
