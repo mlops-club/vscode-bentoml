@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getPathToActivePythonInterpreter } from '../python';
+import { tryGetPathToActivePythonInterpreter } from '../python';
 
 /**
  * Display input boxes to the user and use the inputs to launch a new terminal with a served bento.
@@ -31,7 +31,7 @@ export const serveBentoInTerminalCommand = async (): Promise<void> => {
  * @param port http port
  */
 export const serveBentoInTerminal = async (bentoTag: string, port: string | number): Promise<void> => {
-  const interpreterFpath: string = (await getPathToActivePythonInterpreter()) as string;
+  const interpreterFpath: string = (await tryGetPathToActivePythonInterpreter()) as string;
 
   const [bentoName, bentoVersion] = bentoTag.split(':');
   const terminalDisplayName = `BentoML Serve: ${bentoVersion}`;
