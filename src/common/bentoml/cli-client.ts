@@ -46,7 +46,7 @@ export async function deleteBento(object: Bento) {
   return response.logs;
 }
 
-export async function serve(bentoDirectory: string) : Promise<string> {
+export async function serve(bentoDirectory: string): Promise<string> {
   const interpreterFpath = (await getPathToActivePythonInterpreter()) as string;
   const response = await runShellCommand(interpreterFpath, ['-m', 'bentoml', 'serve', bentoDirectory]);
   return response.logs;

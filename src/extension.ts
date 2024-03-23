@@ -6,11 +6,11 @@ import {
   getExtensionSettings,
   getInterpreterFromSetting,
 } from './common/settings';
-import { registerLogger, traceInfo, traceLog } from './common/logging';
+import { registerLogger, traceError, traceInfo, traceLog } from './common/logging';
 import { createOutputChannel } from './common/vscodeapi';
-import { getPathToActivePythonInterpreter, initializePython } from './common/python';
+import { initializePython } from './common/python';
 import { ensureBentoMlCliIsAvailable } from './common/bentoml/install-cli';
-import { Model, SimpleModel, Bento, BentoFile } from './common/bentoml/models';
+import { SimpleModel, Bento } from './common/bentoml/models';
 import {
   getModels,
   getBentos,
@@ -20,7 +20,11 @@ import {
   showModels,
   serve,
 } from './common/bentoml/cli-client';
-import { BentoMlModelsTreeDataProvider, BentoMLModelTreeItem } from './common/ui/bentoml-models-tree-view';
+import {
+  BentoMlModelsTreeDataProvider,
+  BentoMLModelNameGroupTreeItem,
+  BentoMLModelVersionTreeItem,
+} from './common/ui/bentoml-models-tree-view';
 import { BentoMlBentosTreeDataProvider, BentoMlBento } from './common/ui/bentoml-bentos-tree-view';
 import { BentoMlServeTreeDataProvider } from './common/ui/bentoml-serve-tree-view';
 import yaml from 'js-yaml';
@@ -105,9 +109,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.serveBentoInTerminal`, serveBentoInTerminalCommand);
 
-  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openModelInBrowser`, async (model: BentoMLModelTreeItem) => {
-    vscode.env.openExternal(vscode.Uri.parse('https://docs.bentoml.com'));
-  });
+  vscode.commands.registerCommand(
+    `${consts.EXTENSION_ID}.openModelInBrowser`,
+    async (model: BentoMLModelVersionTreeItem) => {
+      vscode.env.openExternal(vscode.Uri.parse('https://docs.bentoml.com'));
+    }
+  );
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openBentoInBrowser`, async (bento: BentoMlBento) => {
     vscode.env.openExternal(vscode.Uri.parse('https://docs.bentoml.com'));
   });
@@ -136,7 +143,7 @@ export async function activate(context: vscode.ExtensionContext) {
     );
   });
 
-  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.viewModels`, async (model: BentoMLModelTreeItem) => {
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.viewModels`, async (model: BentoMLModelVersionTreeItem) => {
     const modelYaml: string = await showModels(model.label as string);
 
     // Parse YAML content
@@ -145,28 +152,27 @@ export async function activate(context: vscode.ExtensionContext) {
     // Open the YAML content in a new untitled document in Visual Studio Code
     try {
       const modelYaml: string = await showModels(model.label as string);
-      // Parse YAML content
-      //const yamlContent = yaml.dump(response);
       // Open the YAML content in a new untitled document in Visual Studio Code
       const doc: vscode.TextDocument = await vscode.workspace.openTextDocument({
         content: modelYaml,
         language: 'yaml',
       });
+      // make the tab active
       await vscode.window.showTextDocument(doc);
     } catch (err) {
-      console.error(err);
+      traceError(err);
     }
   });
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.deleteModel`, async (model: SimpleModel) => {
     await getModels();
     deleteModel(model);
-    //refresh();
+    bentoMlModelsTreeProvider.refresh();
   });
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.deleteBento`, async (bento: Bento) => {
     await getBentos();
     deleteBento(bento);
-    //refresh();
+    bentoMlBentosTreeProvider.refresh();
   });
 
   vscode.commands.registerCommand(`${consts.EXTENSION_ID}.serve`, async ({ bentoFile }) => {
