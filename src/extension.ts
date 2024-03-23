@@ -201,10 +201,16 @@ export async function activate(context: vscode.ExtensionContext) {
   // notify the user that the extension activated successfully
   vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] extension loaded!`);
 
-  // Perform initial load of bentoml models and bentos to display in the sidebar, TODO this is hacky/brittle
-  // setTimeout(async () => {
-  //   await clearmlSessionsTreeProvider.refresh();
-  // }, 3000);
+  // Perform initial load of bentoml models and bentos to display in the sidebar
+  // TODO: this is hacky/brittle because it waits 3 seconds in hopes that the extension will have
+  // fully loaded before this logic is run.
+  setTimeout(async () => {
+    await Promise.all([
+      bentoMlBentosTreeProvider.refresh(),
+      bentoMlModelsTreeProvider.refresh(),
+      bentoMlServeTreeDataProvider.refresh(),
+    ]);
+  }, 3000);
 }
 
 // This method is called when your extension is deactivated
