@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bentofile",
+  "description": "Schema for BentoML bentofile.yaml configuration",
+  "type": "object",
+  "properties": {
+    "service": {
+      "type": "string",
+      "pattern": "^\\s*([A-z_]+\\.?)+[A-z_]+:\\s*([A-z_][A-z0-9_]*)\\s*$",
+      "examples": ["path.to.service:MyService", "service:svc", "service:SVC"],
+      "markdownDescription": "{{ service.md }}"
+    },
+    "description": {
+      "markdownDescription": "{{ description.md }}",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": ["path"]
+        }
+      ]
+    },
+    "labels": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "{{ labels.md }}"
+    },
+    "include": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Files to include in the Bento, supporting wildcard characters."
+    },
+    "exclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Files to exclude from the Bento, supports gitignore style patterns."
+    },
+    "python": {
+      "$ref": "#/definitions/pythonOptions"
+    },
+    "envs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "string" }
+        },
+        "required": ["name", "value"]
+      },
+      "description": "Environment variables to inject into the Bento container."
+    },
+    "conda": {
+      "type": "object",
+      "properties": {
+        "channels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Custom conda channels to use."
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Custom conda dependencies."
+        },
+        "pip": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Specific pip conda dependencies."
+        },
+        "environment_yml": {
+          "type": "string",
+          "description": "Path to a pre-existing conda environment.yml file."
+        }
+      }
+    },
+    "docker": {
+      "$ref": "#/definitions/dockerOptions"
+    }
+  },
+  "required": ["service"],
+  "definitions": {
+    "pythonOptions": {
+      "type": "object",
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "requirements_txt": { "type": "string" },
+        "lock_packages": { "type": "boolean" },
+        "index_url": { "type": "string" },
+        "no_index": { "type": "boolean" },
+        "trusted_host": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "find_links": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "extra_index_url": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "pip_args": { "type": "string" },
+        "wheels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of paths to wheels to include in the Bento."
+        }
+      },
+      "description": "Configuration for Python packages and environment."
+    },
+    "dockerOptions": {
+      "type": "object",
+      "properties": {
+        "distro": { "type": "string" },
+        "python_version": { "type": "string" },
+        "cuda_version": { "type": "string" },
+        "system_packages": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "setup_script": { "type": "string" },
+        "base_image": { "type": "string" },
+        "dockerfile_template": { "type": "string" }
+      },
+      "description": "Configuration for Docker image generation."
+    }
+  }
+}

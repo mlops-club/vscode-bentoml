@@ -8,20 +8,19 @@
       "type": "string",
       "pattern": "^\\s*([A-z_]+\\.?)+[A-z_]+:\\s*([A-z_][A-z0-9_]*)\\s*$",
       "examples": ["path.to.service:MyService", "service:svc", "service:SVC"],
-      "markdownDescription": "#### service (required) \n\n This field points to the location of a [Service object](https://docs.bentoml.org/en/latest/guides/services.html). \n\nIt's typically defined as service: `\"service:class-name\"`.\n\n- `service`: The Python module, usually the `service.py` file.\n\n- `class-name`: The name of the class-based Service created in `service.py` and decorated with `@bentoml.service`. If you have multiple Services in service.py, you can specify the main Service receiving user requests in `bentofile.yaml`. \n\n Other Services will be started alongside this main Service. \n\n [Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#service)"
+      "markdownDescription": "`service` (required) is a **required** field and points to where a [Service object](https://docs.bentoml.org/en/latest/guides/services.html) resides.  \n \nIt is often defined as `service: \"service:class-name\"`. \n \n- `service`: The Python module, namely the `service.py` file. \n- `class-name`: The class-based Service's name created in `service.py`, decorated with `@bentoml.service`. \n   \nIf you have multiple Services in `service.py`, you can specify the main Service receiving user requests in `bentofile.yaml`. \n \nOther Services will be started together with this main Service. \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#service) \n"
     },
     "description": {
+      "markdownDescription": "`description` (optional) allows you to annotate your Bento with relevant documentation, which can be written in plain text or [Markdown](https://daringfireball.net/projects/markdown/syntax) format. \n \nThe description appears in the Bento's OpenAPI UI and supports full markdown. \n \nYou can either directly provide the description in `bentofile.yaml` or reference an external file through a path. \n \n#### (Option 1) Inline \n \n```yaml \nservice: \"service:svc\" \ndescription: | \n    ## Description For My Bento 🍱 \n \n    Use **any markdown syntax** here! \n \n    > BentoML is awesome! \ninclude: \n    ... \n``` \n \n#### (Option 2) File path \n \n```yaml \nservice: \"service:svc\" \ndescription: \"file: ./README.md\" \ninclude: \n    ... \n``` \n \nFor descriptions sourced from an external file, you can use either an absolute or relative path.  \n \nMake sure the file exists at the specified path when the `bentoml build` command is run.  \n \nFor relative paths, the reference point is the `build_ctx`, which defaults to the directory from which `bentoml build` is executed. \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#description)",
       "oneOf": [
         {
-          "type": "string",
-          "description": "Inline description in plain text or Markdown format."
+          "type": "string"
         },
         {
           "type": "object",
           "properties": {
             "path": {
-              "type": "string",
-              "description": "Path to an external file containing the description."
+              "type": "string"
             }
           },
           "required": ["path"]
@@ -33,7 +32,7 @@
       "additionalProperties": {
         "type": "string"
       },
-      "description": "Key-value pairs associated with the Bento or models."
+      "markdownDescription": "`labels` (optional) are key-value pairs associated with objects.  \n \nIn BentoML, both Bentos and models can have labels attached to them. \n \nThese labels can serve various purposes, such as identifying or categorizing Bentos and models in BentoCloud.  \n \nYou can add or modify labels at any time. \n \n```yaml \nlabels: \n    owner: bentoml-team \n    stage: not-ready \n    build-number: \"14\" \n``` \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#labels)"
     },
     "include": {
       "type": "array",
@@ -57,8 +56,12 @@
       "items": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "value": { "type": "string" }
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
         },
         "required": ["name", "value"]
       },
@@ -69,17 +72,23 @@
       "properties": {
         "channels": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Custom conda channels to use."
         },
         "dependencies": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Custom conda dependencies."
         },
         "pip": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Specific pip conda dependencies."
         },
         "environment_yml": {
@@ -99,28 +108,48 @@
       "properties": {
         "packages": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "requirements_txt": { "type": "string" },
-        "lock_packages": { "type": "boolean" },
-        "index_url": { "type": "string" },
-        "no_index": { "type": "boolean" },
+        "requirements_txt": {
+          "type": "string"
+        },
+        "lock_packages": {
+          "type": "boolean"
+        },
+        "index_url": {
+          "type": "string"
+        },
+        "no_index": {
+          "type": "boolean"
+        },
         "trusted_host": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "find_links": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "extra_index_url": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "pip_args": { "type": "string" },
+        "pip_args": {
+          "type": "string"
+        },
         "wheels": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "List of paths to wheels to include in the Bento."
         }
       },
@@ -129,16 +158,30 @@
     "dockerOptions": {
       "type": "object",
       "properties": {
-        "distro": { "type": "string" },
-        "python_version": { "type": "string" },
-        "cuda_version": { "type": "string" },
+        "distro": {
+          "type": "string"
+        },
+        "python_version": {
+          "type": "string"
+        },
+        "cuda_version": {
+          "type": "string"
+        },
         "system_packages": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "setup_script": { "type": "string" },
-        "base_image": { "type": "string" },
-        "dockerfile_template": { "type": "string" }
+        "setup_script": {
+          "type": "string"
+        },
+        "base_image": {
+          "type": "string"
+        },
+        "dockerfile_template": {
+          "type": "string"
+        }
       },
       "description": "Configuration for Docker image generation."
     }
