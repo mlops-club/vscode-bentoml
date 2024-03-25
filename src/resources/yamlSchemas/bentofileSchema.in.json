@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Bentofile",
-  "description": "Schema for BentoML bentofile.yaml configuration",
+  "markdownDescription": "Schema for BentoML bentofile.yaml configuration",
   "type": "object",
   "properties": {
     "service": {
@@ -32,58 +32,74 @@
       "additionalProperties": {
         "type": "string"
       },
-      "description": "{{ labels.md }}"
+      "markdownDescription": "{{ labels.md }}"
     },
     "include": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "type": "string"
       },
-      "description": "Files to include in the Bento, supporting wildcard characters."
+      "markdownDescription": "Files to include in the Bento, supporting wildcard characters."
     },
     "exclude": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "type": "string"
       },
-      "description": "Files to exclude from the Bento, supports gitignore style patterns."
+      "markdownDescription": "Files to exclude from the Bento, supports gitignore style patterns."
     },
     "python": {
       "$ref": "#/definitions/pythonOptions"
     },
     "envs": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "value": { "type": "string" }
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
         },
         "required": ["name", "value"]
       },
-      "description": "Environment variables to inject into the Bento container."
+      "markdownDescription": "Environment variables to inject into the Bento container."
     },
     "conda": {
       "type": "object",
       "properties": {
         "channels": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "Custom conda channels to use."
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Custom conda channels to use."
         },
         "dependencies": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "Custom conda dependencies."
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Custom conda dependencies."
         },
         "pip": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "Specific pip conda dependencies."
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Specific pip conda dependencies."
         },
         "environment_yml": {
           "type": "string",
-          "description": "Path to a pre-existing conda environment.yml file."
+          "markdownDescription": "Path to a pre-existing conda environment.yml file."
         }
       }
     },
@@ -95,51 +111,112 @@
   "definitions": {
     "pythonOptions": {
       "type": "object",
+      "markdownDescription": "{{ python.md }}",
       "properties": {
         "packages": {
           "type": "array",
-          "items": { "type": "string" }
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Python packages to include in this Bento"
         },
-        "requirements_txt": { "type": "string" },
-        "lock_packages": { "type": "boolean" },
-        "index_url": { "type": "string" },
-        "no_index": { "type": "boolean" },
+        "requirements_txt": {
+          "type": "string",
+          "markdownDescription": "The path to a custom `requirements.txt` file"
+        },
+        "lock_packages": {
+          "type": "boolean",
+          "markdownDescription": "{{ pythonOptions/lock-packages.md }}"
+        },
+        "index_url": {
+          "type": "string",
+          "markdownDescription": "Inputs for the `--index-url` pip argument"
+        },
+        "no_index": {
+          "type": "boolean",
+          "markdownDescription": "Whether to include the `--no-index` pip argument"
+        },
         "trusted_host": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "List of trusted hosts used as inputs using the `--trusted-host` pip argument"
         },
         "find_links": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "List of links to find as inputs using the `--find-links` pip argument"
         },
         "extra_index_url": {
           "type": "array",
-          "items": { "type": "string" }
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "List of extra index URLs as inputs using the `--extra-index-url` pip argument"
         },
-        "pip_args": { "type": "string" },
+        "pip_args": {
+          "type": "string",
+          "markdownDescription": "Any additional pip arguments that you want to add when installing a package, e.g. `\"--pre -U --force-reinstall\"`",
+          "examples": ["--pre -U --force-reinstall"]
+        },
         "wheels": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "List of paths to wheels to include in the Bento."
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "{{ pythonOptions/wheels.md }}"
         }
-      },
-      "description": "Configuration for Python packages and environment."
+      }
     },
     "dockerOptions": {
       "type": "object",
       "properties": {
-        "distro": { "type": "string" },
-        "python_version": { "type": "string" },
-        "cuda_version": { "type": "string" },
+        "distro": {
+          "type": "string",
+          "markdownDescription": "The OS distribution on the Docker image. It defaults to `debian`. \n\n Refer to this [source code file](https://github.com/bentoml/BentoML/blob/main/src/bentoml/_internal/container/frontend/dockerfile/__init__.py) for the most up to date list of supported versions.",
+          "examples": ["debian", "alpine", "ubi8", "amazonlinux"],
+          "default": "debian"
+        },
+        "python_version": {
+          "type": "string",
+          "markdownDescription": "The Python version on the Docker image. \n\n It defaults to the Python version in the build environment. \n\n Note that pinning the exact PATCH version, e.g. `3.11.4` as opposed to `3.11` is not supported. \n\n If you need to specify an exact version of Python, you can do by pinning the `docker_base` image, e.g. `python:slim-bullseye-3.11.4`. \n\n Refer to this [source code file](https://github.com/bentoml/BentoML/blob/main/src/bentoml/_internal/container/frontend/dockerfile/__init__.py) for the most up to date list of supported versions.",
+          "examples": ["3.7", "3.8", "3.9", "3.10"],
+          "default": "3.10"
+        },
+        "cuda_version": {
+          "type": "string",
+          "markdownDescription": "The CUDA version on the Docker image. \n\n Refer to this [source code file](https://github.com/bentoml/BentoML/blob/main/src/bentoml/_internal/container/frontend/dockerfile/__init__.py) for the most up to date list of supported versions.",
+          "examples": ["11.6.2", "11.6", "11"],
+          "default": "11.6.2"
+        },
         "system_packages": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "markdownDescription": "The system packages that will be installed in the container. \n\n For debian-based distros, e.g. Ubuntu, this would be a list of packages to install with `apt-get install <package1> <pacakge 2> ...`",
+          "examples": ["gcc", "ffmpeg", "cmake", "git"]
         },
-        "setup_script": { "type": "string" },
-        "base_image": { "type": "string" },
-        "dockerfile_template": { "type": "string" }
+        "setup_script": {
+          "type": "string",
+          "markdownDescription": "{{ dockerOptions/setup-script.md }}"
+        },
+        "base_image": {
+          "type": "string",
+          "markdownDescription": "A user-provided Docker base image. This will override all other custom attributes of the image."
+        },
+        "dockerfile_template": {
+          "type": "string",
+          "markdownDescription": "Customize the generated Dockerfile by providing a Jinja2 template that extends the default Dockerfile. \n\n The overridable Jinja blocks can be found in the comments of a `Dockerfile` that is generated by running `bentoml build`."
+        }
       },
-      "description": "Configuration for Docker image generation."
+      "markdownDescription": "{{ docker.md }}"
     }
   }
 }

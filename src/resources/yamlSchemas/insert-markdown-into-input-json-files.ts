@@ -89,15 +89,28 @@ async function transformJsonFile(
     // Replace placeholders in the JSON object
     jsonData = replacePlaceholdersWithMarkdown(jsonData, markdownDirectory);
 
+    // Check if the file already exists and is read-only
+    const fileExists = fs.existsSync(outputFilePath);
+    const fileStats = fs.statSync(outputFilePath);
+    const isReadOnly = !(fileStats.mode & fs.constants.W_OK);
+
+    if (fileExists && isReadOnly) {
+      fs.unlinkSync(outputFilePath);
+    }
+
+    // Write the transformed JSON to the output file
     fs.writeFileSync(outputFilePath, JSON.stringify(jsonData, null, 2));
+
+    // Make the file read-only as an extra reminder to contributors not to edit it directly
+    fs.chmodSync(outputFilePath, '444');
     console.log('File transformed and saved successfully.');
   } catch (error) {
-    console.error('An error occurred:', error);
+    console.error('An error occurred while transforming the file:', error);
   }
 }
 
 // Example usage
 const inputFilePath = path.join(__dirname, 'bentofileSchema.in.json');
-const outputFilePath = path.join(__dirname, 'bentofileSchema.json');
+const outputFilePath = path.join(__dirname, 'bentofileSchema.out.json');
 const markdownDirectory = path.join(__dirname, 'bentofileSchemaDescriptions');
 transformJsonFile(inputFilePath, outputFilePath, markdownDirectory);

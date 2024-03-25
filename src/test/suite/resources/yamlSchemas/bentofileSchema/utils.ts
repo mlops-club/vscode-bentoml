@@ -7,7 +7,7 @@ import Ajv from 'ajv';
 // moved to <project_root>/out/. So this path must be relative to that location.
 export const BENTOFILE_JSON_SCHEMA_FPATH = path.resolve(
   __dirname,
-  '../../../../../../src/resources/yamlSchemas/bentofileSchema.json'
+  '../../../../../../src/resources/yamlSchemas/bentofileSchema.out.json'
 );
 
 export const readBentoFileSchema = (): any => {
