@@ -48,7 +48,10 @@
   "contributes": {
     "yamlValidation": [
       {
-        "fileMatch": ["**/*bentofile.yaml", "**/*bentofile.yml"],
+        "fileMatch": [
+          "**/*bentofile.yaml",
+          "**/*bentofile.yml"
+        ],
         "url": "./src/resources/yamlSchemas/bentofileSchema.out.json"
       }
     ],

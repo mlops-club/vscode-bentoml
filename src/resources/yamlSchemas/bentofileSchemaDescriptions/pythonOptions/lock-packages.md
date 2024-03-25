@@ -1,6 +1,6 @@
-(optional) Whether to lock the packages. 
+(optional) Whether to lock the packages.
 
-By default, BentoML automatically locks all package versions, as well as all packages in their dependency graph, to the versions found in the current build environment, and generates a `requirements.lock.txt` file. 
+By default, BentoML automatically locks all package versions, as well as all packages in their dependency graph, to the versions found in the current build environment, and generates a `requirements.lock.txt` file.
 
 This process uses [pip-compile](https://github.com/jazzband/pip-tools) under the hood.
 
@@ -8,7 +8,7 @@ If you have already specified a version for all packages, you can optionally dis
 
 ```yaml
 python:
-  requirements_txt: "requirements.txt"
+  requirements_txt: 'requirements.txt'
   lock_packages: false
 ```
 
