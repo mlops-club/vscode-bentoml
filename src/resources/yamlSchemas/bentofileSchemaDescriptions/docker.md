@@ -15,12 +15,12 @@ docker:
     - gfortran
 ```
 
-> 📌 **Note:**
->
-> BentoML uses `BuildKit <https://github.com/moby/buildkit>`\_, a cache-efficient builder toolkit, to containerize Bentos.
->
-> BuildKit comes with `Docker 18.09 <https://docs.docker.com/develop/develop-images/build_enhancements/>`_. This means
-> if you are using Docker via Docker Desktop, BuildKit will be available by default. If you are using a standalone version of Docker,
-> you can install BuildKit by following the instructions `here <https://github.com/docker/buildx#installing>`_.
+**Note:**
+
+BentoML uses [BuildKit](https://github.com/moby/buildkit), a cache-efficient builder toolkit, to containerize Bentos.
+
+BuildKit comes with `Docker 18.09 <https://docs.docker.com/develop/develop-images/build_enhancements/>`_. This means
+if you are using Docker via Docker Desktop, BuildKit will be available by default. If you are using a standalone version of Docker,
+you can install BuildKit by following the instructions `here <https://github.com/docker/buildx#installing>`_.
 
 [Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#docker)
