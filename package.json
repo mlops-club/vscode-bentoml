@@ -1,7 +1,7 @@
 {
   "name": "bentoml",
   "publisher": "mlops-club",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "displayName": "BentoML",
   "icon": "src/resources/bentoml-logo.png",
   "author": {
