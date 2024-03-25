@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bentofile",
+  "description": "Schema for BentoML bentofile.yaml configuration",
+  "type": "object",
+  "properties": {
+    "service": {
+      "type": "string",
+      "pattern": "^\\s*([A-z_]+\\.?)+[A-z_]+:\\s*([A-z_][A-z0-9_]*)\\s*$",
+      "examples": ["path.to.service:MyService", "service:svc", "service:SVC"],
+      "markdownDescription": "#### service (required) \n\n This field points to the location of a [Service object](https://docs.bentoml.org/en/latest/guides/services.html). \n\nIt's typically defined as service: `\"service:class-name\"`.\n\n- `service`: The Python module, usually the `service.py` file.\n\n- `class-name`: The name of the class-based Service created in `service.py` and decorated with `@bentoml.service`. If you have multiple Services in service.py, you can specify the main Service receiving user requests in `bentofile.yaml`. \n\n Other Services will be started alongside this main Service. \n\n [Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#service)"
+    },
+    "description": {
+      "markdownDescription": "#### description (optional) \n\n The description field allows you to add documentation for your Bento service. \n\nThis documentation can be written in plain text or formatted using Markdown format. \n\n There are two ways to provide a description: \n\n 1. **Inline** \n\n     You can directly write the description within the `bentofile.yaml` file using a multi-line string (denoted by `|`). \n\n This allows you to use Markdown formatting for enhanced readability. \n\n **Example:** \n\n ```yaml\n\n service: \"service:svc\"\n description: |\n \t## Description For My Bento \n\n \tUse **any markdown syntax** here!\n\n \t> BentoML is awesome!\n\n```\n\n\n 2. **External File** \n\n     You can reference an external file containing the description. This is useful for longer descriptions or when you want to manage the documentation separately. The path to the file is specified using the `file: path/to/file.md` format. \n\n     **Example:** \n\n ```yaml\n\n service: \"service:svc\"\n description: \"file: ./README.md\"\n\n``` \n\n Note: \n\n  - For descriptions sourced from an external file, the path can be absolute or relative.  \n  - Ensure the referenced file exists at the specified location when running `bentoml build`.  \n  - For relative paths, the reference point is the `build_ctx`. By default, this is the directory where you execute the bentoml build command. \n\n [Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#description)",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Inline description in plain text or Markdown format."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Path to an external file containing the description."
+            }
+          },
+          "required": ["path"]
+        }
+      ]
+    },
+    "labels": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Key-value pairs associated with the Bento or models."
+    },
+    "include": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Files to include in the Bento, supporting wildcard characters."
+    },
+    "exclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Files to exclude from the Bento, supports gitignore style patterns."
+    },
+    "python": {
+      "$ref": "#/definitions/pythonOptions"
+    },
+    "envs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "value"]
+      },
+      "description": "Environment variables to inject into the Bento container."
+    },
+    "conda": {
+      "type": "object",
+      "properties": {
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Custom conda channels to use."
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Custom conda dependencies."
+        },
+        "pip": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Specific pip conda dependencies."
+        },
+        "environment_yml": {
+          "type": "string",
+          "description": "Path to a pre-existing conda environment.yml file."
+        }
+      }
+    },
+    "docker": {
+      "$ref": "#/definitions/dockerOptions"
+    }
+  },
+  "required": ["service"],
+  "definitions": {
+    "pythonOptions": {
+      "type": "object",
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requirements_txt": {
+          "type": "string"
+        },
+        "lock_packages": {
+          "type": "boolean"
+        },
+        "index_url": {
+          "type": "string"
+        },
+        "no_index": {
+          "type": "boolean"
+        },
+        "trusted_host": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "find_links": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "extra_index_url": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pip_args": {
+          "type": "string"
+        },
+        "wheels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of paths to wheels to include in the Bento."
+        }
+      },
+      "description": "Configuration for Python packages and environment."
+    },
+    "dockerOptions": {
+      "type": "object",
+      "properties": {
+        "distro": {
+          "type": "string"
+        },
+        "python_version": {
+          "type": "string"
+        },
+        "cuda_version": {
+          "type": "string"
+        },
+        "system_packages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "setup_script": {
+          "type": "string"
+        },
+        "base_image": {
+          "type": "string"
+        },
+        "dockerfile_template": {
+          "type": "string"
+        }
+      },
+      "description": "Configuration for Docker image generation."
+    }
+  }
+}

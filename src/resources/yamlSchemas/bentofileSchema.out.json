@@ -1,0 +1,254 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bentofile",
+  "markdownDescription": "Schema for BentoML bentofile.yaml configuration",
+  "type": "object",
+  "properties": {
+    "service": {
+      "type": "string",
+      "pattern": "^\\s*([A-z_]+\\.?)+[A-z_]+:\\s*([A-z_][A-z0-9_]*)\\s*$",
+      "examples": [
+        "path.to.service:MyService",
+        "service:svc",
+        "service:SVC"
+      ],
+      "markdownDescription": "`service` (required) is a **required** field and points to where a [Service object](https://docs.bentoml.org/en/latest/guides/services.html) resides. \n \nIt is often defined as `service: \"service:class-name\"`. \n \n- `service`: The Python module, namely the `service.py` file. \n- `class-name`: The class-based Service's name created in `service.py`, decorated with `@bentoml.service`. \n \nIf you have multiple Services in `service.py`, you can specify the main Service receiving user requests in `bentofile.yaml`. \n \nOther Services will be started together with this main Service. \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#service) \n"
+    },
+    "description": {
+      "markdownDescription": "`description` (optional) allows you to annotate your Bento with relevant documentation, which can be written in plain text or [Markdown](https://daringfireball.net/projects/markdown/syntax) format. \n \nThe description appears in the Bento's OpenAPI UI and supports full markdown. \n \nYou can either directly provide the description in `bentofile.yaml` or reference an external file through a path. \n \n#### (Option 1) Inline \n \n```yaml \nservice: 'service:svc' \ndescription: | \n  ## Description For My Bento 🍱 \n \n  Use **any markdown syntax** here! \n \n  > BentoML is awesome! \ninclude: ... \n``` \n \n#### (Option 2) File path \n \n```yaml \nservice: 'service:svc' \ndescription: 'file: ./README.md' \ninclude: ... \n``` \n \nFor descriptions sourced from an external file, you can use either an absolute or relative path. \n \nMake sure the file exists at the specified path when the `bentoml build` command is run. \n \nFor relative paths, the reference point is the `build_ctx`, which defaults to the directory from which `bentoml build` is executed. \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#description) \n",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      ]
+    },
+    "labels": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "markdownDescription": "`labels` (optional) are key-value pairs associated with objects. \n \nIn BentoML, both Bentos and models can have labels attached to them. \n \nThese labels can serve various purposes, such as identifying or categorizing Bentos and models in BentoCloud. \n \nYou can add or modify labels at any time. \n \n```yaml \nlabels: \n  owner: bentoml-team \n  stage: not-ready \n  build-number: '14' \n``` \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#labels) \n"
+    },
+    "include": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      },
+      "markdownDescription": "Files to include in the Bento, supporting wildcard characters."
+    },
+    "exclude": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      },
+      "markdownDescription": "Files to exclude from the Bento, supports gitignore style patterns."
+    },
+    "python": {
+      "$ref": "#/definitions/pythonOptions"
+    },
+    "envs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      },
+      "markdownDescription": "Environment variables to inject into the Bento container."
+    },
+    "conda": {
+      "type": "object",
+      "properties": {
+        "channels": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Custom conda channels to use."
+        },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Custom conda dependencies."
+        },
+        "pip": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Specific pip conda dependencies."
+        },
+        "environment_yml": {
+          "type": "string",
+          "markdownDescription": "Path to a pre-existing conda environment.yml file."
+        }
+      }
+    },
+    "docker": {
+      "$ref": "#/definitions/dockerOptions"
+    }
+  },
+  "required": [
+    "service"
+  ],
+  "definitions": {
+    "pythonOptions": {
+      "type": "object",
+      "markdownDescription": "`python` (optional) \n \nConfigure how and which Python packages to be installed in the bento. \n \nYou specify the required Python packages for a given Bento using the `python.packages` field.  \n \nBentoML allows you to specify the \ndesired version and install a package from a custom PyPI source or from a GitHub repository.  \n \nIf a package lacks a specific version, \nBentoML will lock the package to the version available in the current environment when building a Bento. \n \n```yaml \npython: \n  packages: \n    - \"numpy\" \n    - \"matplotlib==3.5.1\" \n    - \"package>=0.2,<0.3\" \n    - \"torchvision==0.9.2 --extra-index-url https://download.pytorch.org/whl/lts/1.8/cpu\" \n    - \"git+https://github.com/username/mylib.git@main\" \n``` \n \n**Note:** You don't need to specify `bentoml` as a dependency in this field since the current version of BentoML will be added to the list by default.  \n \nHowever, \nyou can override this by specifying a different BentoML version. \n \nIf you already have a [requirements.txt](https://pip.pypa.io/en/stable/reference/requirements-file-format/) file that defines Python packages for your project, you may also supply a path to the `requirements.txt` file directly: \n \n```yaml \npython: \n  requirements_txt: \"./demos/xgboost/service/requirements.txt\" \n``` \n \n## Pip install options \n \nYou can provide additional `pip install` arguments in the `python` field.  \n \nIf provided, these arguments will be applied to all packages defined in `python.packages` as \nwell as the `requirements_txt` file. \n \n```yaml \npython: \n  requirements_txt: \"./requirements.txt\" \n  index_url: \"https://my.old.mirror/simple\" \n  no_index: False \n  trusted_host: \n    - \"pypi.python.org\" \n    - \"my.old.mirror\" \n  find_links: \n    - \"https://download.pytorch.org/whl/cu80/stable.html\" \n  extra_index_url: \n    - \"https://<other_api_token>:@my.new.mirror/pypi/simple\" \n    - \"https://pypi.python.org/simple\" \n  pip_args: \"--pre -U --force-reinstall\" \n``` \n \n**Note:** \n \n**By default, BentoML caches pip artifacts across all local image builds to speed up the build process**. \n \nIf you want to force a re-download instead of using the cache, you can specify the `pip_args: \"--no-cache-dir\"` option in your \n`bentofile.yaml` file, or use the `--no-cache` option in the `bentoml containerize` command.  \n \nFor example: \n \n```bash \nbentoml containerize my_bento:latest --no-cache \n```",
+      "properties": {
+        "packages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "Python packages to include in this Bento"
+        },
+        "requirements_txt": {
+          "type": "string",
+          "markdownDescription": "The path to a custom `requirements.txt` file"
+        },
+        "lock_packages": {
+          "type": "boolean",
+          "markdownDescription": "(optional) Whether to lock the packages.  \n \nBy default, BentoML automatically locks all package versions, as well as all packages in their dependency graph, to the versions found in the current build environment, and generates a `requirements.lock.txt` file.  \n \nThis process uses [pip-compile](https://github.com/jazzband/pip-tools) under the hood. \n \nIf you have already specified a version for all packages, you can optionally disable this behavior by setting the `lock_packages` field to `false`: \n \n```yaml \npython: \n  requirements_txt: \"requirements.txt\" \n  lock_packages: false \n``` \n \n--- \n \nYou might choose to disable this if the included `requirements.txt` file or specified packages already have pinned versions of primary and transitive dependencies. \n \nBear in mind that lockfiles in Python are never guaranteed to be platform-agnostic. \n \nIn other words, lockfiles should typically be generated on the same platform, e.g. OS that the bento will run with. \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#pypi-package-locking)"
+        },
+        "index_url": {
+          "type": "string",
+          "markdownDescription": "Inputs for the `--index-url` pip argument"
+        },
+        "no_index": {
+          "type": "boolean",
+          "markdownDescription": "Whether to include the `--no-index` pip argument"
+        },
+        "trusted_host": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "List of trusted hosts used as inputs using the `--trusted-host` pip argument"
+        },
+        "find_links": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "List of links to find as inputs using the `--find-links` pip argument"
+        },
+        "extra_index_url": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "List of extra index URLs as inputs using the `--extra-index-url` pip argument"
+        },
+        "pip_args": {
+          "type": "string",
+          "markdownDescription": "Any additional pip arguments that you want to add when installing a package, e.g. `\"--pre -U --force-reinstall\"`",
+          "examples": [
+            "--pre -U --force-reinstall"
+          ]
+        },
+        "wheels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "(optional) List of paths to wheels to include in the Bento. \n \nPython `whl` files are also supported as a type of dependency to include in a Bento. Simply provide a path to your `whl` files under the `wheels` field. \n \n```yaml \npython: \n  wheels: \n    - ./lib/my_package.whl \n``` \n \nIf the wheel is hosted on a local network without TLS, you can indicate that the domain is safe to pip with the `trusted_host` field. \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#python-wheels)"
+        }
+      }
+    },
+    "dockerOptions": {
+      "type": "object",
+      "properties": {
+        "distro": {
+          "type": "string",
+          "markdownDescription": "The OS distribution on the Docker image. It defaults to `debian`. \n\n Refer to this [source code file](https://github.com/bentoml/BentoML/blob/main/src/bentoml/_internal/container/frontend/dockerfile/__init__.py) for the most up to date list of supported versions.",
+          "examples": [
+            "debian",
+            "alpine",
+            "ubi8",
+            "amazonlinux"
+          ],
+          "default": "debian"
+        },
+        "python_version": {
+          "type": "string",
+          "markdownDescription": "The Python version on the Docker image. \n\n It defaults to the Python version in the build environment. \n\n Note that pinning the exact PATCH version, e.g. `3.11.4` as opposed to `3.11` is not supported. \n\n If you need to specify an exact version of Python, you can do by pinning the `docker_base` image, e.g. `python:slim-bullseye-3.11.4`. \n\n Refer to this [source code file](https://github.com/bentoml/BentoML/blob/main/src/bentoml/_internal/container/frontend/dockerfile/__init__.py) for the most up to date list of supported versions.",
+          "examples": [
+            "3.7",
+            "3.8",
+            "3.9",
+            "3.10"
+          ],
+          "default": "3.10"
+        },
+        "cuda_version": {
+          "type": "string",
+          "markdownDescription": "The CUDA version on the Docker image. \n\n Refer to this [source code file](https://github.com/bentoml/BentoML/blob/main/src/bentoml/_internal/container/frontend/dockerfile/__init__.py) for the most up to date list of supported versions.",
+          "examples": [
+            "11.6.2",
+            "11.6",
+            "11"
+          ],
+          "default": "11.6.2"
+        },
+        "system_packages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "markdownDescription": "The system packages that will be installed in the container. \n\n For debian-based distros, e.g. Ubuntu, this would be a list of packages to install with `apt-get install <package1> <pacakge 2> ...`",
+          "examples": [
+            "gcc",
+            "ffmpeg",
+            "cmake",
+            "git"
+          ]
+        },
+        "setup_script": {
+          "type": "string",
+          "markdownDescription": "`setup_script` (optional) \n \nFor advanced Docker customization, you can also use the `setup_script` \nfield to inject any script during the image build process. \n \nFor example, \nwith NLP projects you can pre-download NLTK data in the image by setting \nthe following values. \n \nIn the `bentofile.yaml` file: \n \n```yaml \n# bentofile.yaml \n--- \npython: \n  packages: \n    - nltk \ndocker: \n  setup_script: './setup.sh' \n``` \n \nIn the `setup.sh` file: \n \n```bash \n#!/bin/bash \nset -euxo pipefail \n \necho \"Downloading NLTK data..\" \npython -m nltk.downloader all \n``` \n \nBuild a new Bento and then run \n`bentoml containerize MY_BENTO --progress plain` to view the Docker \nimage build progress. \n \nThe newly built Docker image will contain the \npre-downloaded NLTK dataset. \n \n> **Tip** \n> When working with bash scripts, we recommend you add \n> `set -euxo pipefail` to the beginning. \n> Especially when `set -e` is missing, the script will fail silently without \n> raising an exception during `bentoml containerize`. Learn more about \n> [Bash Set builtin](https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html). \n \nIt is also possible to provide a Python script for initializing the \nDocker image. \n \n**Example** \n \nIn the `bentofile.yaml` file: \n \n```yaml \n# bentofile.yaml \n--- \npython: \n  packages: \n    - nltk \ndocker: \n  setup_script: './setup.py' \n``` \n \nIn the `setup.py` file: \n \n```python \n#!/usr/bin/env python \n \nimport nltk \n \nprint(\"Downloading NLTK data..\") \nnltk.download('treebank') \n``` \n \n> **Note** \n> Pay attention to `#!/bin/bash` and `#!/usr/bin/env python` in the first \n> line of the example scripts above. \n> They are known as \n> [Shebang](<https://en.wikipedia.org/wiki/Shebang_(Unix)>) and they are \n> required in a setup script provided to BentoML. \n \nSetup scripts are always executed after the specified Python packages, \nconda dependencies, and system packages are installed. Therefore, you \ncan import and utilize those libraries in your setup script for the \ninitialization process. \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#setup-script) \n"
+        },
+        "base_image": {
+          "type": "string",
+          "markdownDescription": "A user-provided Docker base image. This will override all other custom attributes of the image."
+        },
+        "dockerfile_template": {
+          "type": "string",
+          "markdownDescription": "Customize the generated Dockerfile by providing a Jinja2 template that extends the default Dockerfile. \n\n The overridable Jinja blocks can be found in the comments of a `Dockerfile` that is generated by running `bentoml build`."
+        }
+      },
+      "markdownDescription": "`docker` (optional) \n \nBentoML makes it easy to deploy a Bento to a Docker container. It provides a set of options for customizing the Docker image generated from a Bento. \n \nThe following `docker` field contains some basic Docker configurations: \n \n```yaml \ndocker: \n  distro: debian \n  python_version: '3.8.12' \n  cuda_version: '11.6.2' \n  system_packages: \n    - libblas-dev \n    - liblapack-dev \n    - gfortran \n``` \n \n> 📌 **Note:** \n> \n> BentoML uses `BuildKit <https://github.com/moby/buildkit>`\\_, a cache-efficient builder toolkit, to containerize Bentos. \n> \n> BuildKit comes with `Docker 18.09 <https://docs.docker.com/develop/develop-images/build_enhancements/>`_. This means \n> if you are using Docker via Docker Desktop, BuildKit will be available by default. If you are using a standalone version of Docker, \n> you can install BuildKit by following the instructions `here <https://github.com/docker/buildx#installing>`_. \n \n[Documentation](https://docs.bentoml.org/en/latest/guides/build-options.html#docker) \n"
+    }
+  }
+}
