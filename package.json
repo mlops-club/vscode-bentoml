@@ -105,6 +105,10 @@
         "title": "BentoML: Serve Bento in new Terminal"
       },
       {
+        "command": "bentoml.openBentomlHomeDir",
+        "title": "BentoML: Open BentoML Home Directory in VS Code Workspace"
+      },
+      {
         "command": "bentoml.refreshModelEntry",
         "title": "BentoML: Refresh models",
         "icon": "$(refresh)"
