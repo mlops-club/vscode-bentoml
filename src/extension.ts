@@ -190,13 +190,26 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  let disposable = vscode.commands.registerCommand(`${consts.EXTENSION_ID}.installPythonDependencies`, async () => {
+  let dependencyInstallationDisposable = vscode.commands.registerCommand(`${consts.EXTENSION_ID}.installPythonDependencies`, async () => {
     // The code you place here will be executed every time your command is executed
     await ensureBentoMlCliIsAvailable();
     vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] Python dependencies installed successfully!`);
   });
+  context.subscriptions.push(dependencyInstallationDisposable);
 
-  context.subscriptions.push(disposable);
+  let homeDirOpeningDisposable = vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openBentomlHomeDir`, async () => {
+    const extensionConfig = vscode.workspace.getConfiguration();
+    const homeDirPath = extensionConfig.get<string>('bentoml.bentomlHomeDir') || "~/bentoml";
+    console.log(`homeDirPath: ${homeDirPath}`);
+    const homeDirUri = vscode.Uri.file(homeDirPath);
+    const homeDir: vscode.WorkspaceFolder = {
+        uri: homeDirUri,
+        name: 'BentoML Home Directory', // Optional
+        index: 0
+    };
+    vscode.workspace.updateWorkspaceFolders(0, null, [homeDir]);
+  });
+  context.subscriptions.push(homeDirOpeningDisposable);
 
   // notify the user that the extension activated successfully
   vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] extension loaded!`);
