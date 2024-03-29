@@ -1,7 +1,7 @@
 {
   "name": "bentoml",
   "publisher": "mlops-club",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "displayName": "BentoML",
   "icon": "src/resources/bentoml-logo.png",
   "author": {
@@ -65,8 +65,8 @@
       "properties": {
         "bentoml.bentomlHomeDir": {
           "type": "string",
-          "description": "Path to BentoML home directory. Defaults to `~/bentoml`",
-          "default": "~/bentoml"
+          "description": "Path to BentoML home directory. Defaults to `bentoml`",
+          "default": "bentoml"
         }
       }
     },
@@ -103,6 +103,10 @@
       {
         "command": "bentoml.serveBentoInTerminal",
         "title": "BentoML: Serve Bento in new Terminal"
+      },
+      {
+        "command": "bentoml.openBentomlHomeDir",
+        "title": "BentoML: Open BentoML Home Directory in VS Code Workspace"
       },
       {
         "command": "bentoml.refreshModelEntry",
