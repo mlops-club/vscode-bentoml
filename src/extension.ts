@@ -206,16 +206,30 @@ export async function activate(context: vscode.ExtensionContext) {
     const bentomlDir = path.resolve(homeDir, bentomlDirPath);
     console.log(`bentomlDir: ${bentomlDir}`);
 
-    const bentomlDirUri = vscode.Uri.file(bentomlDir);
-    const bentomlWorkspaceFolder: vscode.WorkspaceFolder = {
-      uri: bentomlDirUri,
-      name: 'BentoML Home Directory', // Optional
-      index: 0
-    };
+    try {
+      const bentomlDirUri = vscode.Uri.file(bentomlDir);
+      const bentomlWorkspaceFolder: vscode.WorkspaceFolder = {
+        uri: bentomlDirUri,
+        name: 'bentoml-home-directory', // Optional
+        index: 0
+      };
 
-    const currentFolders = vscode.workspace.workspaceFolders ?? [];
-    const allFolders: vscode.WorkspaceFolder[] = [...currentFolders, bentomlWorkspaceFolder];
-    vscode.workspace.updateWorkspaceFolders(0, null, ...allFolders);
+      const currentFolders = vscode.workspace.workspaceFolders ?? [];
+      const allFolders: vscode.WorkspaceFolder[] = [...currentFolders, bentomlWorkspaceFolder];
+      for (const folder of allFolders) {
+        console.log(`folder URI (before): ${folder.uri}`);
+      }
+      const added: boolean = vscode.workspace.updateWorkspaceFolders(0, 1, ...allFolders);
+      console.log(`Added? ${added}`);
+      const newCurrentFolders = vscode.workspace.workspaceFolders ?? [];
+      for (const folder of newCurrentFolders) {
+        console.log(`folder URI (after): ${folder.uri}`);
+      }
+    } catch (error) {
+      console.error('Error opening BentoML home directory:', error);
+      vscode.window.showErrorMessage('Error opening BentoML home directory');
+    }
+
   });
   context.subscriptions.push(homeDirOpeningDisposable);
 
