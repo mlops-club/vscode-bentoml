@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as consts from './common/constants';
+import * as os from 'os';
 import * as path from 'path';
 import {
   BentoMlExtensionSettings as BentoMlExtensionSettings,
@@ -199,15 +200,22 @@ export async function activate(context: vscode.ExtensionContext) {
 
   let homeDirOpeningDisposable = vscode.commands.registerCommand(`${consts.EXTENSION_ID}.openBentomlHomeDir`, async () => {
     const extensionConfig = vscode.workspace.getConfiguration();
-    const homeDirPath = extensionConfig.get<string>('bentoml.bentomlHomeDir') || "~/bentoml";
-    console.log(`homeDirPath: ${homeDirPath}`);
-    const homeDirUri = vscode.Uri.file(homeDirPath);
-    const homeDir: vscode.WorkspaceFolder = {
-        uri: homeDirUri,
-        name: 'BentoML Home Directory', // Optional
-        index: 0
+    
+    const homeDir = os.homedir();
+    const bentomlDirPath = extensionConfig.get<string>('bentoml.bentomlHomeDir') || "bentoml";
+    const bentomlDir = path.resolve(homeDir, bentomlDirPath);
+    console.log(`bentomlDir: ${bentomlDir}`);
+
+    const bentomlDirUri = vscode.Uri.file(bentomlDir);
+    const bentomlWorkspaceFolder: vscode.WorkspaceFolder = {
+      uri: bentomlDirUri,
+      name: 'BentoML Home Directory', // Optional
+      index: 0
     };
-    vscode.workspace.updateWorkspaceFolders(0, null, [homeDir]);
+
+    const currentFolders = vscode.workspace.workspaceFolders ?? [];
+    const allFolders: vscode.WorkspaceFolder[] = [...currentFolders, bentomlWorkspaceFolder];
+    vscode.workspace.updateWorkspaceFolders(0, null, ...allFolders);
   });
   context.subscriptions.push(homeDirOpeningDisposable);
 

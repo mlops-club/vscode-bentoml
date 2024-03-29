@@ -65,8 +65,8 @@
       "properties": {
         "bentoml.bentomlHomeDir": {
           "type": "string",
-          "description": "Path to BentoML home directory. Defaults to `~/bentoml`",
-          "default": "~/bentoml"
+          "description": "Path to BentoML home directory. Defaults to `bentoml`",
+          "default": "bentoml"
         }
       }
     },
