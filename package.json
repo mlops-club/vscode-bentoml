@@ -1,7 +1,7 @@
 {
   "name": "bentoml",
   "publisher": "mlops-club",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "displayName": "BentoML",
   "icon": "src/resources/bentoml-logo.png",
   "author": {
@@ -43,6 +43,11 @@
     "Data Science",
     "Machine Learning"
   ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
@@ -241,20 +246,25 @@
     "redhat.vscode-yaml"
   ],
   "devDependencies": {
+    "@types/chai": "^4.3.14",
     "@types/fs-extra": "^11.0.3",
     "@types/js-yaml": "^4.0.9",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
+    "@types/sinon": "^17.0.3",
     "@types/vscode": "^1.83.0",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "ajv": "^6.12.6",
     "c8": "^8.0.1",
+    "chai": "^5.1.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
     "mocha-explorer-launcher-scripts": "^0.4.0",
     "prettier": "^3.1.0",
+    "sinon": "^17.0.1",
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.5.0",
     "ts-node": "^10.9.2",

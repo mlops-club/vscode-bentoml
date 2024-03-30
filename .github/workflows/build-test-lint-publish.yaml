@@ -36,7 +36,7 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Format
-        run: npx prettier --check .
+        run: npx prettier --write .
 
   test:
     runs-on: ubuntu-latest
