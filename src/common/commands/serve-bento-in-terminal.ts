@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { tryGetPathToActivePythonInterpreter } from '../python';
+import { tryGetPathToActivePythonInterpreter } from '@/common/python';
 
 /**
  * Display input boxes to the user and use the inputs to launch a new terminal with a served bento.

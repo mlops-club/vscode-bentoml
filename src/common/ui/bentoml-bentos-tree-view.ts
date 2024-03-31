@@ -1,8 +1,8 @@
 // TODO -- This entire file needs to be rewritten to use BentoML models
 
 import * as vscode from 'vscode';
-import { Bento } from '../bentoml/models';
-import { listBentos } from '../bentoml/cli-client';
+import { Bento } from '@/common/bentoml/models';
+import { listBentos } from '@/common/bentoml/cli-client';
 
 export class BentoMlBentosTreeDataProvider implements vscode.TreeDataProvider<BentoMlBento | vscode.TreeItem> {
   constructor(public bentos: Bento[] = []) {}

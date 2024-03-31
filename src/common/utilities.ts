@@ -1,5 +1,5 @@
 import { Uri, WorkspaceFolder } from 'vscode';
-import { getWorkspaceFolders } from './vscodeapi';
+import { getWorkspaceFolders } from '@/common/vscodeapi';
 import path from 'path';
 import * as fs from 'fs-extra';
 

@@ -1,5 +1,5 @@
 import { spawn, ChildProcess } from 'child_process';
-import { traceError, traceInfo } from './logging';
+import { traceError, traceInfo } from '@/common/logging';
 
 /**
  * Run an arbitrary bash command and log the outputs.

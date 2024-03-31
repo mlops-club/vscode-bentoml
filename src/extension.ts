@@ -1,17 +1,17 @@
 import * as vscode from 'vscode';
-import * as consts from './common/constants';
+import * as consts from '@/common/constants';
 import * as os from 'os';
 import * as path from 'path';
 import {
   BentoMlExtensionSettings as BentoMlExtensionSettings,
   getExtensionSettings,
   getInterpreterFromSetting,
-} from './common/settings';
-import { registerLogger, traceError, traceInfo, traceLog } from './common/logging';
-import { createOutputChannel } from './common/vscodeapi';
-import { initializePython, promptIfPythonInterpreterIsNotConfigured } from './common/python';
-import { ensureBentoMlCliIsAvailable } from './common/bentoml/install-cli';
-import { SimpleModel, Bento } from './common/bentoml/models';
+} from '@/common/settings';
+import { registerLogger, traceError, traceInfo, traceLog } from '@/common/logging';
+import { createOutputChannel } from '@/common/vscodeapi';
+import { initializePython, promptIfPythonInterpreterIsNotConfigured } from '@/common/python';
+import { ensureBentoMlCliIsAvailable } from '@/common/bentoml/install-cli';
+import { SimpleModel, Bento } from '@/common/bentoml/models';
 import {
   listModels,
   listBentos,
@@ -20,16 +20,16 @@ import {
   getBentoInfo,
   getModelInfo,
   serve,
-} from './common/bentoml/cli-client';
+} from '@/common/bentoml/cli-client';
 import {
   BentoMlModelsTreeDataProvider,
   BentoMLModelNameGroupTreeItem,
   BentoMLModelVersionTreeItem,
-} from './common/ui/bentoml-models-tree-view';
-import { BentoMlBentosTreeDataProvider, BentoMlBento } from './common/ui/bentoml-bentos-tree-view';
-import { BentoMlServeTreeDataProvider } from './common/ui/bentoml-serve-tree-view';
+} from '@/common/ui/bentoml-models-tree-view';
+import { BentoMlBentosTreeDataProvider, BentoMlBento } from '@/common/ui/bentoml-bentos-tree-view';
+import { BentoMlServeTreeDataProvider } from '@/common/ui/bentoml-serve-tree-view';
 import yaml from 'js-yaml';
-import { serveBentoInTerminalCommand } from './common/commands/serve-bento-in-terminal';
+import { serveBentoInTerminalCommand } from '@/common/commands/serve-bento-in-terminal';
 
 export async function activate(context: vscode.ExtensionContext) {
   /**

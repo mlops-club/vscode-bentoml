@@ -11,10 +11,10 @@
  */
 
 import { ConfigurationChangeEvent, ConfigurationScope, WorkspaceConfiguration, WorkspaceFolder } from 'vscode';
-import { getInterpreterDetails } from './python';
-import { getConfiguration, getWorkspaceFolders } from './vscodeapi';
-import { traceLog } from './logging';
-import * as consts from './constants';
+import { getInterpreterDetails } from '@/common/python';
+import { getConfiguration, getWorkspaceFolders } from '@/common/vscodeapi';
+import { traceLog } from '@/common/logging';
+import * as consts from '@/common/constants';
 
 export interface BentoMlExtensionSettings {
   bentomlHomeDir: string;
