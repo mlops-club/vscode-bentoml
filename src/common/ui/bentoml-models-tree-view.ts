@@ -1,8 +1,8 @@
 // TODO -- This entire file needs to be rewritten to use BentoML models
 
 import * as vscode from 'vscode';
-import { Model, SimpleModel } from '../bentoml/models';
-import { listModels } from '../bentoml/cli-client';
+import { Model, SimpleModel } from '@/common/bentoml/models';
+import { listModels } from '@/common/bentoml/cli-client';
 
 /**
  *

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { BentoFile } from '../bentoml/models';
-import { getBentoFiles } from '../bentoml/bentofile';
+import { BentoFile } from '@/common/bentoml/models';
+import { getBentoFiles } from '@/common/bentoml/bentofile';
 
 export class BentoFileTreeItem extends vscode.TreeItem {
   readonly contextValue = 'top-level-bentoml-serve-tree-item';

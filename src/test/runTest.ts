@@ -1,5 +1,5 @@
 import * as path from 'path';
-
+import 'module-alias/register';
 import { runTests } from '@vscode/test-electron';
 
 async function main() {

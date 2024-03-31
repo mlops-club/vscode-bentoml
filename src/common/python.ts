@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { commands, Disposable, Event, EventEmitter, extensions, Uri, WorkspaceFolder } from 'vscode';
-import { traceError, traceInfo, traceLog } from './logging';
+import { traceError, traceInfo, traceLog } from '@/common/logging';
 import * as vscode from 'vscode';
 import { exec as execCb } from 'child_process';
 import { promisify } from 'util';
-import { runShellCommand } from './shell';
-import { getProjectRoot } from './utilities';
-import { getWorkspaceSettings } from './settings';
-import { SETTINGS_NAMESPACE } from './constants';
-import * as consts from './constants';
+import { runShellCommand } from '@/common/shell';
+import { getProjectRoot } from '@/common/utilities';
+import { getWorkspaceSettings } from '@/common/settings';
+import { SETTINGS_NAMESPACE } from '@/common/constants';
+import * as consts from '@/common/constants';
 
 const exec = promisify(execCb);
 

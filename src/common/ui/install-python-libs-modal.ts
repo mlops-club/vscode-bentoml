@@ -12,10 +12,9 @@
  */
 
 import * as vscode from 'vscode';
-import { installPythonPackagesInEnv, isPythonPackageInstalledInEnv } from '../python';
-import { EXTENSION_NAME } from '../constants';
-import { traceError } from '../logging';
-import { channel as CHANNEL } from '../logging';
+import { installPythonPackagesInEnv, isPythonPackageInstalledInEnv } from '@/common/python';
+import { EXTENSION_NAME } from '@/common/constants';
+import { traceError, channel as CHANNEL } from '@/common/logging';
 
 /**
  * Check if the provided Python packages are installed in the specified environment.
