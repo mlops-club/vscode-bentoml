@@ -1,7 +1,6 @@
-import { BentoFile } from './models';
+import { BentoFile } from '@/common/bentoml/models';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import { traceLog } from '../logging';
 
 export const getBentoFiles = (directory: string): BentoFile[] => {
   const bentoFiles: BentoFile[] = [];

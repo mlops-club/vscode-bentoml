@@ -1,7 +1,7 @@
 {
   "name": "bentoml",
   "publisher": "mlops-club",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "displayName": "BentoML",
   "icon": "src/resources/bentoml-logo.png",
   "author": {
@@ -225,14 +225,17 @@
       ]
     }
   },
+  "_moduleAliases": {
+    "@": "./src"
+  },
   "scripts": {
     "build": "vsce package",
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "rm -rf ./out/; tsc -p . --outDir out",
-    "watch-tests": "rm -rf ./out/; tsc -p . -w --outDir out",
+    "compile-tests": "rm -rf ./out/; tsc -p . && tsc-alias -p tsconfig.json",
+    "watch-tests": "rm -rf ./out/; tsc -p . -w && tsc-alias -p tsconfig.json",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src --ext ts --fix",
     "format": "prettier --write ./",
@@ -263,11 +266,13 @@
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
     "mocha-explorer-launcher-scripts": "^0.4.0",
+    "module-alias": "^2.2.3",
     "prettier": "^3.1.0",
     "sinon": "^17.0.1",
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.5.0",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.8",
     "typescript": "^5.2.2",
     "vsce": "^1.97.0",
     "webpack": "^5.89.0",

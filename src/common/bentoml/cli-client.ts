@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import * as consts from '../constants';
-import { Model, SimpleModel, Bento } from './models';
-import { runShellCommand } from '../shell';
-import { tryGetPathToActivePythonInterpreter } from '../python';
-import { traceVerbose } from '../logging';
+import * as consts from '@/common/constants';
+import { Model, SimpleModel, Bento } from '@/common/bentoml/models';
+import { runShellCommand } from '@/common/shell';
+import { tryGetPathToActivePythonInterpreter } from '@/common/python';
+import { traceVerbose } from '@/common/logging';
 
 export async function listModels(): Promise<SimpleModel[]> {
   const interpreterFpath = (await tryGetPathToActivePythonInterpreter()) as string;
