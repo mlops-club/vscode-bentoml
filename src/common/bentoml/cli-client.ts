@@ -73,6 +73,13 @@ export async function serve(bentoDirectory: string): Promise<string> {
   return response.logs;
 }
 
+export async function containerize(bentoDirectory: string): Promise<string> {
+  const interpreterFpath = (await tryGetPathToActivePythonInterpreter()) as string;
+  console.log(`command: ${interpreterFpath} -m bentoml containerize ${bentoDirectory}`);
+  const response = await tryRunShellCommand(interpreterFpath, ['-m', 'bentoml', 'containerize', bentoDirectory]);
+  return response.logs;
+}
+
 export const tryRunShellCommand = async (
   interpreterFpath: string,
   args: string[]

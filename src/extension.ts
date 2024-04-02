@@ -20,6 +20,7 @@ import {
   getBentoInfo,
   getModelInfo,
   serve,
+  containerize,
 } from '@/common/bentoml/cli-client';
 import {
   BentoMlModelsTreeDataProvider,
@@ -188,6 +189,20 @@ export async function activate(context: vscode.ExtensionContext) {
       await vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] Started serving ${service}!`);
     } catch (e) {
       await vscode.window.showErrorMessage(`[${consts.EXTENSION_NAME}] Failed to serve ${service}: ${e}`);
+    }
+  });
+
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.containerizeBento`, async ({ bentoFile }) => {
+    const { absolutePath, service } = bentoFile;
+    const directoryPath = path.dirname(absolutePath);
+    try {
+      const result = await containerize(directoryPath);
+      if (result.toLowerCase().includes('error')) {
+        throw new Error(result);
+      }
+      await vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] Started containerizing ${service}!`);
+    } catch (e) {
+      await vscode.window.showErrorMessage(`[${consts.EXTENSION_NAME}] Failed to containerize ${service}: ${e}`);
     }
   });
 
