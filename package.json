@@ -91,7 +91,7 @@
         },
         {
           "id": "bentoml-serve",
-          "name": "Serve"
+          "name": "Services"
         }
       ]
     },
@@ -161,6 +161,11 @@
         "command": "bentoml.serve",
         "title": "Serve Model",
         "icon": "$(play)"
+      },
+      {
+        "command": "bentoml.containerizeBento",
+        "title": "Containerize Bento",
+        "icon": "$(primitive-square)"
       }
     ],
     "menus": {
@@ -220,6 +225,11 @@
         {
           "command": "bentoml.serve",
           "when": "view == bentoml-serve && viewItem == top-level-bentoml-serve-tree-item",
+          "group": "inline"
+        },
+        {
+          "command": "bentoml.containerizeBento",
+          "when": "view == bentoml-bentos && viewItem == top-level-bentoml-bento-tree-item",
           "group": "inline"
         }
       ]
