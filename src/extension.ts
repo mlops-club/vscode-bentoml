@@ -192,17 +192,16 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.containerizeBento`, async ({ bentoFile }) => {
-    const { absolutePath, service } = bentoFile;
-    const directoryPath = path.dirname(absolutePath);
+  vscode.commands.registerCommand(`${consts.EXTENSION_ID}.containerizeBento`, async (bento: BentoMlBento) => {
+    const bentoTag = bento.bento.tag;
     try {
-      const result = await containerize(directoryPath);
+      const result = await containerize(bentoTag);
       if (result.toLowerCase().includes('error')) {
         throw new Error(result);
       }
-      await vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] Started containerizing ${service}!`);
+      await vscode.window.showInformationMessage(`[${consts.EXTENSION_NAME}] Started containerizing ${bentoTag}!`);
     } catch (e) {
-      await vscode.window.showErrorMessage(`[${consts.EXTENSION_NAME}] Failed to containerize ${service}: ${e}`);
+      await vscode.window.showErrorMessage(`[${consts.EXTENSION_NAME}] Failed to containerize ${bentoTag}: ${e}`);
     }
   });
 

@@ -73,10 +73,10 @@ export async function serve(bentoDirectory: string): Promise<string> {
   return response.logs;
 }
 
-export async function containerize(bentoDirectory: string): Promise<string> {
+export async function containerize(bentoTag: string): Promise<string> {
   const interpreterFpath = (await tryGetPathToActivePythonInterpreter()) as string;
-  console.log(`command: ${interpreterFpath} -m bentoml containerize ${bentoDirectory}`);
-  const response = await tryRunShellCommand(interpreterFpath, ['-m', 'bentoml', 'containerize', bentoDirectory]);
+  console.log(`command: ${interpreterFpath} -m bentoml containerize ${bentoTag}`);
+  const response = await tryRunShellCommand(interpreterFpath, ['-m', 'bentoml', 'containerize', bentoTag]);
   return response.logs;
 }
 
@@ -91,9 +91,10 @@ export const tryRunShellCommand = async (
   if (response.exitCode !== 0) {
     vscode.window.showErrorMessage(
       `[${consts.EXTENSION_NAME}] Command failed with exit code ${response.exitCode}:\n\n${response.logs}`
-    );
-    throw new Error(`Command failed with exit code ${response.exitCode}: ${response.logs}`);
-  }
+      );
+      throw new Error(`Command failed with exit code ${response.exitCode}: ${response.logs}`);
+    }
+  console.log(`log: ${response.logs}`);
   return response;
 };
 
