@@ -2,7 +2,7 @@
  * This TypeScript script is designed to read a JSON file and replace specific placeholders within it
  * with the content of Markdown files located in a specified directory.
  *
- * Run with `npm exec ts-node path/to/this-script.ts`
+ * Run with `npm exec ts-node src/resources/yamlSchemas/insert-markdown-into-input-json-files.ts`
  *
  * Why? For the JSON Schema's to render Markdown descriptions when being used for autocompletion,
  * the field { "markdownDescription": "..." } must be filled out. The markdown strings must be
@@ -110,7 +110,23 @@ async function transformJsonFile(
 }
 
 // Example usage
-const inputFilePath = path.join(__dirname, 'bentofileSchema.in.json');
-const outputFilePath = path.join(__dirname, 'bentofileSchema.out.json');
-const markdownDirectory = path.join(__dirname, 'bentofileSchemaDescriptions');
-transformJsonFile(inputFilePath, outputFilePath, markdownDirectory);
+const inputFilePathBentofileSchema = path.join(__dirname, 'bentofileSchema.in.json');
+const outputFilePathBentofileSchema = path.join(__dirname, 'bentofileSchema.out.json');
+const markdownDirectoryBentofileSchemaDescriptions = path.join(__dirname, 'bentofileSchemaDescriptions');
+transformJsonFile(
+  inputFilePathBentofileSchema,
+  outputFilePathBentofileSchema,
+  markdownDirectoryBentofileSchemaDescriptions
+);
+
+const inputFilePathBentoConfigurationSchema = path.join(__dirname, 'bentoConfigurationSchema.in.json');
+const outputFilePathBentoConfigurationSchema = path.join(__dirname, 'bentoConfigurationSchema.out.json');
+const markdownDirectoryBentoConfigurationSchemaDescriptions = path.join(
+  __dirname,
+  'bentoConfigurationSchemaDescriptions'
+);
+transformJsonFile(
+  inputFilePathBentoConfigurationSchema,
+  outputFilePathBentoConfigurationSchema,
+  markdownDirectoryBentofileSchemaDescriptions
+);

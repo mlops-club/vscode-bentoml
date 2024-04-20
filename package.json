@@ -1,7 +1,7 @@
 {
   "name": "bentoml",
   "publisher": "mlops-club",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "displayName": "BentoML",
   "icon": "src/resources/bentoml-logo.png",
   "author": {
@@ -58,6 +58,13 @@
           "**/*bentofile.yml"
         ],
         "url": "./src/resources/yamlSchemas/bentofileSchema.out.json"
+      },
+      {
+        "fileMatch": [
+          "**/*bento_config*.yaml",
+          "**/*bento_config*.yml"
+        ],
+        "url": "./src/resources/yamlSchemas/bentoConfigurationSchema.out.json"
       }
     ],
     "configuration": {
