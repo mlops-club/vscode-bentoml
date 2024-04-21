@@ -23,10 +23,18 @@ describe('Bento Configuration JSON Schema: version', () => {
     const valid = validateBentoConfigFile(bentoConfig);
     assert.strictEqual(valid, true);
   });
-  it('should fail validation for an invalid version', async () => {
+  it('should fail validation for an invalid version - string', async () => {
     const bentoConfig = `
         # invalid version
         version: "invalid"
+        `;
+    const valid = validateBentoConfigFile(bentoConfig);
+    assert.strictEqual(valid, false);
+  });
+  it('should fail validation for an invalid version - number other than 1 or 2', async () => {
+    const bentoConfig = `
+        # invalid version
+        version: 3
         `;
     const valid = validateBentoConfigFile(bentoConfig);
     assert.strictEqual(valid, false);
