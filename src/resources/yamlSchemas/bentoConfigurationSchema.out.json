@@ -1,0 +1,566 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "integer",
+      "description": "Specifies the configuration version. Valid versions are 1 and 2.",
+      "enum": [1, 2]
+    }
+  },
+  "required": ["version"],
+  "oneOf": [
+    {
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "api_server": {
+          "type": "object",
+          "properties": {
+            "workers": { "type": ["integer", "null"] },
+            "backlog": { "type": "integer", "minimum": 64 },
+            "max_runner_connections": { "type": "integer", "minimum": 1 },
+            "traffic": {
+              "type": "object",
+              "properties": {
+                "timeout": { "type": "integer", "minimum": 0 },
+                "max_concurrency": { "type": ["integer", "null"] }
+              }
+            },
+            "metrics": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "namespace": { "type": "string" },
+                "duration": {
+                  "type": "object",
+                  "properties": {
+                    "buckets": { "type": "array", "items": { "type": "number" } },
+                    "min": { "type": ["number", "null"] },
+                    "max": { "type": ["number", "null"] },
+                    "factor": { "type": ["number", "null"], "exclusiveMinimum": 0 }
+                  }
+                }
+              }
+            },
+            "logging": {
+              "type": "object",
+              "properties": {
+                "access": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": { "type": "boolean" },
+                    "request_content_length": { "type": "boolean" },
+                    "request_content_type": { "type": "boolean" },
+                    "response_content_length": { "type": "boolean" },
+                    "response_content_type": { "type": "boolean" },
+                    "skip_paths": { "type": "array", "items": { "type": "string" } },
+                    "format": {
+                      "type": "object",
+                      "properties": {
+                        "trace_id": { "type": "string" },
+                        "span_id": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "ssl": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "certfile": { "type": ["string", "null"] },
+                "keyfile": { "type": ["string", "null"] },
+                "keyfile_password": { "type": ["string", "null"] },
+                "ca_certs": { "type": ["string", "null"] },
+                "version": { "type": ["integer", "null"], "minimum": 1 },
+                "cert_reqs": { "type": ["integer", "null"] },
+                "ciphers": { "type": ["string", "null"] }
+              }
+            },
+            "http": {
+              "type": "object",
+              "properties": {
+                "host": { "type": "string" },
+                "port": { "type": "integer", "minimum": 1 },
+                "cors": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": { "type": "boolean" },
+                    "access_control_allow_origins": { "type": ["array", "string", "null"] },
+                    "access_control_allow_credentials": { "type": ["boolean", "null"] },
+                    "access_control_allow_methods": { "type": ["array", "string", "null"] },
+                    "access_control_allow_headers": { "type": ["array", "string", "null"] },
+                    "access_control_allow_origin_regex": { "type": ["string", "null"] },
+                    "access_control_max_age": { "type": ["integer", "null"] },
+                    "access_control_expose_headers": { "type": ["array", "string", "null"] }
+                  }
+                },
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "trace_id": { "type": "boolean" }
+                  }
+                }
+              }
+            },
+            "grpc": {
+              "type": "object",
+              "properties": {
+                "host": { "type": "string" },
+                "port": { "type": "integer", "minimum": 1 },
+                "max_concurrent_streams": { "type": ["integer", "null"] },
+                "maximum_concurrent_rpcs": { "type": ["integer", "null"] },
+                "max_message_length": { "type": "integer" },
+                "reflection": { "type": "object", "properties": { "enabled": { "type": "boolean" } } },
+                "channelz": { "type": "object", "properties": { "enabled": { "type": "boolean" } } },
+                "metrics": {
+                  "type": "object",
+                  "properties": {
+                    "host": { "type": "string" },
+                    "port": { "type": "integer", "minimum": 1 }
+                  }
+                }
+              }
+            },
+            "runner_probe": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "timeout": { "type": "integer" },
+                "period": { "type": "integer" }
+              }
+            }
+          }
+        },
+        "runners": {
+          "type": "object",
+          "properties": {
+            "resources": { "type": ["object", "null"] },
+            "workers_per_resource": { "type": "integer", "minimum": 1 },
+            "traffic": {
+              "type": "object",
+              "properties": {
+                "timeout": { "type": "integer", "minimum": 0 },
+                "max_concurrency": { "type": ["integer", "null"] }
+              }
+            },
+            "batching": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "max_batch_size": { "type": "integer", "minimum": 1 },
+                "max_latency_ms": { "type": "integer", "minimum": 1 }
+              }
+            },
+            "logging": {
+              "type": "object",
+              "properties": {
+                "access": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": { "type": "boolean" },
+                    "request_content_length": { "type": "boolean" },
+                    "request_content_type": { "type": "boolean" },
+                    "response_content_length": { "type": "boolean" },
+                    "response_content_type": { "type": "boolean" }
+                  }
+                }
+              }
+            },
+            "metrics": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "namespace": { "type": "string" }
+              }
+            },
+            "tracing": {
+              "type": "object",
+              "properties": {
+                "exporter_type": { "type": ["string", "null"] },
+                "sample_rate": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+                "excluded_urls": { "type": ["array", "string", "null"], "items": { "type": "string" } },
+                "timeout": { "type": ["integer", "null"], "minimum": 1 },
+                "max_tag_value_length": { "type": ["integer", "null"] },
+                "zipkin": {
+                  "type": "object",
+                  "properties": {
+                    "endpoint": { "type": ["string", "null"] },
+                    "local_node_ipv4": { "type": ["string", "integer", "null"] },
+                    "local_node_ipv6": { "type": ["string", "integer", "null"] },
+                    "local_node_port": { "type": ["integer", "null"], "minimum": 1 }
+                  }
+                },
+                "jaeger": {
+                  "type": "object",
+                  "properties": {
+                    "protocol": { "type": ["string", "null"] },
+                    "collector_endpoint": { "type": ["string", "null"] },
+                    "thrift": {
+                      "type": "object",
+                      "properties": {
+                        "agent_host_name": { "type": ["string", "null"] },
+                        "agent_port": { "type": ["integer", "null"], "minimum": 1 },
+                        "udp_split_oversized_batches": { "type": ["boolean", "null"] }
+                      }
+                    },
+                    "grpc": {
+                      "type": "object",
+                      "properties": {
+                        "insecure": { "type": ["boolean", "null"] }
+                      }
+                    }
+                  }
+                },
+                "otlp": {
+                  "type": "object",
+                  "properties": {
+                    "protocol": { "type": ["string", "null"] },
+                    "endpoint": { "type": ["string", "null"] },
+                    "compression": { "type": ["string", "null"] },
+                    "http": {
+                      "type": "object",
+                      "properties": {
+                        "certificate_file": { "type": ["string", "null"] },
+                        "headers": { "type": ["object", "null"] }
+                      }
+                    },
+                    "grpc": {
+                      "type": "object",
+                      "properties": {
+                        "headers": { "type": ["object", "null"] },
+                        "insecure": { "type": ["boolean", "null"] }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "monitoring": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "type": { "type": "string" },
+                "options": {
+                  "type": "object",
+                  "properties": {
+                    "log_config_file": { "type": ["string", "null"] },
+                    "log_path": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "version": {
+          "const": 2
+        },
+        "services": {
+          "type": "object",
+          "properties": {
+            "resources": {
+              "description": "Resource limits for the service, like CPU and memory.",
+              "type": ["object", "null"],
+              "properties": {
+                "cpu": { "type": "string" },
+                "memory": { "type": "string" },
+                "gpu": { "type": "number", "exclusiveMinimum": 0 },
+                "gpu_type": { "type": "string" },
+                "tpu_type": { "type": "string" }
+              }
+            },
+            "workers": {
+              "description": "Defines the number of worker processes to spawn.",
+              "type": ["integer", "string", "null"],
+              "minimum": 1
+            },
+            "threads": {
+              "description": "Number of threads per worker.",
+              "type": "integer",
+              "minimum": 1
+            },
+            "backlog": {
+              "description": "The maximum number of pending connections.",
+              "type": "integer",
+              "minimum": 64
+            },
+            "max_runner_connections": {
+              "description": "Maximum simultaneous connections to a runner server.",
+              "type": "integer",
+              "minimum": 1
+            },
+            "traffic": {
+              "type": "object",
+              "properties": {
+                "timeout": {
+                  "type": "number",
+                  "description": "Timeout for traffic operations in seconds.",
+                  "exclusiveMinimum": 0
+                },
+                "max_concurrency": {
+                  "type": ["integer", "null"],
+                  "description": "Maximum number of concurrent connections allowed.",
+                  "minimum": 1
+                }
+              }
+            },
+            "metrics": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Toggle for enabling metrics collection."
+                },
+                "namespace": {
+                  "type": "string",
+                  "description": "Namespace used for metrics collection."
+                },
+                "duration": {
+                  "type": "object",
+                  "properties": {
+                    "buckets": {
+                      "type": ["array", "null"],
+                      "items": { "type": "number" },
+                      "description": "Histogram buckets for duration metrics."
+                    },
+                    "min": {
+                      "type": ["number", "null"],
+                      "exclusiveMinimum": 0
+                    },
+                    "max": {
+                      "type": ["number", "null"],
+                      "exclusiveMinimum": 0
+                    },
+                    "factor": {
+                      "type": ["number", "null"],
+                      "exclusiveMinimum": 1
+                    }
+                  }
+                }
+              }
+            },
+            "runner_probe": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Toggle for runner health probe checks."
+                },
+                "timeout": {
+                  "type": "integer",
+                  "description": "Timeout for the probe in seconds."
+                },
+                "period": {
+                  "type": "integer",
+                  "description": "Time between probe checks in seconds."
+                }
+              }
+            },
+            "logging": {
+              "type": "object",
+              "properties": {
+                "access": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": { "type": "boolean" },
+                    "request_content_length": { "type": ["boolean", "null"] },
+                    "request_content_type": { "type": ["boolean", "null"] },
+                    "response_content_length": { "type": ["boolean", "null"] },
+                    "response_content_type": { "type": ["boolean", "null"] },
+                    "skip_paths": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "format": {
+                      "type": "object",
+                      "properties": {
+                        "trace_id": { "type": "string" },
+                        "span_id": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "ssl": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "certfile": { "type": ["string", "null"] },
+                "keyfile": { "type": ["string", "null"] },
+                "keyfile_password": { "type": ["string", "null"] },
+                "ca_certs": { "type": ["string", "null"] },
+                "version": {
+                  "type": ["integer", "null"],
+                  "minimum": 1
+                },
+                "cert_reqs": { "type": ["integer", "null"] },
+                "ciphers": { "type": ["string", "null"] }
+              }
+            },
+            "http": {
+              "type": "object",
+              "properties": {
+                "host": {
+                  "type": "string",
+                  "description": "The IP address to bind the HTTP server to."
+                },
+                "port": {
+                  "type": "integer",
+                  "description": "The port number for the HTTP server.",
+                  "minimum": 1
+                },
+                "cors": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": { "type": "boolean" },
+                    "access_control_allow_origins": { "type": ["array", "string", "null"] },
+                    "access_control_allow_credentials": { "type": ["boolean", "null"] },
+                    "access_control_allow_methods": { "type": ["array", "string", "null"] },
+                    "access_control_allow_headers": { "type": ["array", "string", "null"] },
+                    "access_control_allow_origin_regex": { "type": ["string", "null"] },
+                    "access_control_max_age": { "type": ["integer", "null"] },
+                    "access_control_expose_headers": { "type": ["array", "string", "null"] }
+                  }
+                },
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "trace_id": { "type": "boolean" }
+                  }
+                }
+              }
+            },
+            "grpc": {
+              "type": "object",
+              "properties": {
+                "host": {
+                  "type": "string",
+                  "description": "The IP address to bind the gRPC server to."
+                },
+                "port": {
+                  "type": "integer",
+                  "description": "The port number for the gRPC server.",
+                  "minimum": 1
+                },
+                "metrics": {
+                  "type": "object",
+                  "properties": {
+                    "host": {
+                      "type": "string",
+                      "description": "IP address for metrics server."
+                    },
+                    "port": {
+                      "type": "integer",
+                      "description": "Port number for metrics server.",
+                      "minimum": 1
+                    }
+                  }
+                },
+                "reflection": { "type": "object", "properties": { "enabled": { "type": "boolean" } } },
+                "channelz": { "type": "object", "properties": { "enabled": { "type": "boolean" } } },
+                "max_concurrent_streams": { "type": ["integer", "null"] },
+                "max_message_length": { "type": ["integer", "null"] },
+                "maximum_concurrent_rpcs": { "type": ["integer", "null"] }
+              }
+            },
+            "monitoring": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "type": { "type": "string" },
+                "options": {
+                  "type": "object",
+                  "properties": {
+                    "log_config_file": { "type": ["string", "null"] },
+                    "log_path": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "tracing": {
+              "type": "object",
+              "properties": {
+                "exporter_type": { "type": ["string", "null"] },
+                "sample_rate": {
+                  "type": ["number", "null"],
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "excluded_urls": {
+                  "type": ["array", "string", "null"],
+                  "items": { "type": "string" }
+                },
+                "timeout": {
+                  "type": ["integer", "null"],
+                  "minimum": 1
+                },
+                "max_tag_value_length": { "type": ["integer", "null"] },
+                "zipkin": {
+                  "type": "object",
+                  "properties": {
+                    "endpoint": { "type": ["string", "null"] },
+                    "local_node_ipv4": { "type": ["string", "integer", "null"] },
+                    "local_node_ipv6": { "type": ["string", "integer", "null"] },
+                    "local_node_port": { "type": ["integer", "null"], "minimum": 1 }
+                  }
+                },
+                "jaeger": {
+                  "type": "object",
+                  "properties": {
+                    "protocol": { "type": ["string", "null"] },
+                    "collector_endpoint": { "type": ["string", "null"] },
+                    "thrift": {
+                      "type": "object",
+                      "properties": {
+                        "agent_host_name": { "type": ["string", "null"] },
+                        "agent_port": { "type": ["integer", "null"], "minimum": 1 },
+                        "udp_split_oversized_batches": { "type": ["boolean", "null"] }
+                      }
+                    },
+                    "grpc": {
+                      "type": "object",
+                      "properties": {
+                        "insecure": { "type": ["boolean", "null"] }
+                      }
+                    }
+                  }
+                },
+                "otlp": {
+                  "type": "object",
+                  "properties": {
+                    "protocol": { "type": ["string", "null"] },
+                    "endpoint": { "type": ["string", "null"] },
+                    "compression": { "type": ["string", "null"] },
+                    "http": {
+                      "type": "object",
+                      "properties": {
+                        "certificate_file": { "type": ["string", "null"] },
+                        "headers": { "type": ["object", "null"] }
+                      }
+                    },
+                    "grpc": {
+                      "type": "object",
+                      "properties": {
+                        "headers": { "type": ["object", "null"] },
+                        "insecure": { "type": ["boolean", "null"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}
